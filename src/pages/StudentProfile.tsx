@@ -68,6 +68,7 @@ const StudentProfile = () => {
   const saveEdit = () => {
     setProfile({ ...editDraft });
     setEditingSection(null);
+    toast.success("Profile updated ✓");
   };
 
   const addSkill = () => {
