@@ -4,6 +4,8 @@ import { Eye, EyeOff, Mail, Lock, ArrowRight, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useAuth, type UserRole } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 
 type Role = "Student" | "Admin" | "Placement Cell";
 
