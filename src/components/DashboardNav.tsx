@@ -15,6 +15,7 @@ const NAV_LINKS = [
 
 const DashboardNav = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
