@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Zap, Bell, ChevronDown, User, Settings, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const NAV_LINKS = [
   { label: "Dashboard", to: "/dashboard" },
@@ -14,6 +15,7 @@ const NAV_LINKS = [
 
 const DashboardNav = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -86,9 +88,9 @@ const DashboardNav = () => {
             {dropdownOpen && (
               <div className="absolute right-0 top-full mt-1 w-44 bg-card border border-border rounded-xl shadow-lg py-1 z-50">
                 {[
-                  { icon: User, label: "Profile", action: () => {} },
+                  { icon: User, label: "Profile", action: () => navigate("/profile") },
                   { icon: Settings, label: "Settings", action: () => {} },
-                  { icon: LogOut, label: "Logout", action: () => navigate("/login") },
+                  { icon: LogOut, label: "Logout", action: () => { logout(); navigate("/login"); } },
                 ].map((item) => (
                   <button
                     key={item.label}

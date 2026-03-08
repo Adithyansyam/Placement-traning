@@ -4,8 +4,11 @@ import { Eye, EyeOff, Mail, Lock, ArrowRight, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useAuth, type UserRole } from "@/contexts/AuthContext";
 
 type Role = "Student" | "Admin" | "Placement Cell";
+const ROLE_MAP: Record<Role, UserRole> = { Student: "student", Admin: "admin", "Placement Cell": "placement" };
+const REDIRECT_MAP: Record<UserRole, string> = { student: "/dashboard", admin: "/admin", placement: "/placement" };
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,6 +19,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const validate = () => {
     const errs: { email?: string; password?: string } = {};
@@ -33,8 +37,10 @@ const Login = () => {
     setIsLoading(true);
     await new Promise((r) => setTimeout(r, 1200));
     setIsLoading(false);
-    toast.success(`Welcome back! Signed in as ${role}.`);
-    navigate("/dashboard");
+    const mappedRole = ROLE_MAP[role];
+    login(mappedRole);
+    toast.success("Welcome back! ✓");
+    navigate(REDIRECT_MAP[mappedRole]);
   };
 
   const roles: Role[] = ["Student", "Admin", "Placement Cell"];

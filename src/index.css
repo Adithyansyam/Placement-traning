@@ -101,3 +101,24 @@
     font-family: 'Inter', sans-serif;
   }
 }
+
+@layer components {
+  /* Card hover lift */
+  .card-hover {
+    @apply transition-all duration-200;
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+  }
+
+  /* Page fade transition */
+  .page-fade {
+    animation: pageFadeIn 0.2s ease-out;
+  }
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

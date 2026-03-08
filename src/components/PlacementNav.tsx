@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Zap, Bell, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 
 const LINKS = [
   { label: "Overview", to: "/placement" },
@@ -13,6 +14,7 @@ const LINKS = [
 
 const PlacementNav = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +66,7 @@ const PlacementNav = () => {
                 {[
                   { icon: User, label: "Profile", action: () => {} },
                   { icon: Settings, label: "Settings", action: () => {} },
-                  { icon: LogOut, label: "Logout", action: () => navigate("/login") },
+                  { icon: LogOut, label: "Logout", action: () => { logout(); navigate("/login"); } },
                 ].map((item) => (
                   <button key={item.label} onClick={() => { setDropdownOpen(false); item.action(); }} className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors">
                     <item.icon className="w-4 h-4 text-muted-foreground" />{item.label}

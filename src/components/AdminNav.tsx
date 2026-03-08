@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Zap, Bell, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ADMIN_LINKS = [
   { label: "Overview", to: "/admin" },
@@ -14,6 +15,7 @@ const ADMIN_LINKS = [
 
 const AdminNav = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -74,7 +76,7 @@ const AdminNav = () => {
                 {[
                   { icon: User, label: "Profile", action: () => {} },
                   { icon: Settings, label: "Settings", action: () => {} },
-                  { icon: LogOut, label: "Logout", action: () => navigate("/login") },
+                  { icon: LogOut, label: "Logout", action: () => { logout(); navigate("/login"); } },
                 ].map((item) => (
                   <button
                     key={item.label}

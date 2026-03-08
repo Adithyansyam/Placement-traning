@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import DashboardNav from "@/components/DashboardNav";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -67,6 +68,7 @@ const StudentProfile = () => {
   const saveEdit = () => {
     setProfile({ ...editDraft });
     setEditingSection(null);
+    toast.success("Profile updated ✓");
   };
 
   const addSkill = () => {
@@ -282,7 +284,7 @@ const StudentProfile = () => {
                     </div>
                   ))}
                 </div>
-                <Button className="mt-5 gap-1"><Link2 className="h-4 w-4" /> Save Links</Button>
+                <Button className="mt-5 gap-1" onClick={() => toast.success("Profile updated ✓")}><Link2 className="h-4 w-4" /> Save Links</Button>
               </CardContent>
             </Card>
           </TabsContent>
