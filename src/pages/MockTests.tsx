@@ -122,7 +122,7 @@ const MockTests = () => {
   const filtered = TESTS.filter((t) => tabFilter === "All" || t.type === tabFilter);
 
   return (
-    <div className="min-h-screen bg-accent/30">
+    <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
       <main className="pt-14">
         <AnimatePresence mode="wait">

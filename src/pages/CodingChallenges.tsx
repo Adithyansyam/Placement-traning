@@ -108,7 +108,7 @@ const CodingChallenges = () => {
   const lines = code.split("\n");
 
   return (
-    <div className="min-h-screen bg-accent/30">
+    <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
       <main className="pt-14 h-screen flex flex-col">
         <div className="flex-1 flex overflow-hidden">
