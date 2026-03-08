@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Search, FileText, Video, ExternalLink, Heart,
+  Search, FileText, Video, ExternalLink, Heart, X,
   Calculator, Cpu, MessageSquare, Users, Building2, LayoutGrid
 } from "lucide-react";
 import DashboardNav from "@/components/DashboardNav";
@@ -16,18 +16,20 @@ interface Material {
   fileType: FileType;
   category: Category;
   tags: string[];
+  url: string;
+  embedId?: string;
 }
 
 const MATERIALS: Material[] = [
-  { title: "Quantitative Aptitude Basics", description: "Master number systems, percentages, and time & work problems.", fileType: "PDF", category: "Aptitude", tags: ["Aptitude", "Quant"] },
-  { title: "Logical Reasoning Patterns", description: "Common patterns in seating, blood relations, and puzzles.", fileType: "PDF", category: "Aptitude", tags: ["Aptitude", "Logic"] },
-  { title: "Data Structures & Algorithms", description: "Arrays, trees, graphs, and sorting algorithms explained visually.", fileType: "Video", category: "Technical", tags: ["Technical", "DSA"] },
-  { title: "DBMS Complete Notes", description: "Normalization, ER diagrams, SQL queries, and transactions.", fileType: "PDF", category: "Technical", tags: ["Technical", "DBMS"] },
-  { title: "TCS NQT Pattern Guide", description: "Detailed analysis of TCS NQT exam pattern and question types.", fileType: "PDF", category: "Company-Wise", tags: ["TCS", "Pattern"] },
-  { title: "Infosys Previous Papers", description: "Last 5 years solved papers for Infosys campus recruitment.", fileType: "PDF", category: "Company-Wise", tags: ["Infosys", "Papers"] },
-  { title: "Verbal Ability Shortcuts", description: "Quick tricks for grammar, reading comprehension, and vocabulary.", fileType: "PDF", category: "Verbal", tags: ["Verbal", "Shortcuts"] },
-  { title: "HR Interview Questions", description: "Top 50 most asked HR questions with ideal answer frameworks.", fileType: "PDF", category: "HR", tags: ["HR", "Interview"] },
-  { title: "System Design Intro", description: "Fundamentals of scalable systems, load balancing, and caching.", fileType: "Video", category: "Technical", tags: ["Technical", "Design"] },
+  { title: "Quantitative Aptitude Basics", description: "Master number systems, percentages, and time & work problems.", fileType: "Video", category: "Aptitude", tags: ["Aptitude", "Quant"], url: "https://www.youtube.com/watch?v=LjbLhMMrkNM", embedId: "LjbLhMMrkNM" },
+  { title: "Logical Reasoning Patterns", description: "Common patterns in seating, blood relations, and puzzles.", fileType: "Video", category: "Aptitude", tags: ["Aptitude", "Logic"], url: "https://www.youtube.com/watch?v=tCYxc-2-3fY", embedId: "tCYxc-2-3fY" },
+  { title: "Data Structures & Algorithms", description: "Arrays, trees, graphs, and sorting algorithms explained visually.", fileType: "Video", category: "Technical", tags: ["Technical", "DSA"], url: "https://www.youtube.com/watch?v=8hly31xKli0", embedId: "8hly31xKli0" },
+  { title: "DBMS Complete Notes", description: "Normalization, ER diagrams, SQL queries, and transactions.", fileType: "PDF", category: "Technical", tags: ["Technical", "DBMS"], url: "https://www.tutorialspoint.com/dbms/dbms_tutorial.pdf" },
+  { title: "TCS NQT Pattern Guide", description: "Detailed analysis of TCS NQT exam pattern and question types.", fileType: "Video", category: "Company-Wise", tags: ["TCS", "Pattern"], url: "https://www.youtube.com/watch?v=oBYJBFoBbKc", embedId: "oBYJBFoBbKc" },
+  { title: "Infosys Previous Papers", description: "Last 5 years solved papers for Infosys campus recruitment.", fileType: "PDF", category: "Company-Wise", tags: ["Infosys", "Papers"], url: "https://www.geeksforgeeks.org/infosys-placement-papers/" },
+  { title: "Verbal Ability Shortcuts", description: "Quick tricks for grammar, reading comprehension, and vocabulary.", fileType: "Video", category: "Verbal", tags: ["Verbal", "Shortcuts"], url: "https://www.youtube.com/watch?v=yXBRGM3GOQI", embedId: "yXBRGM3GOQI" },
+  { title: "HR Interview Questions", description: "Top 50 most asked HR questions with ideal answer frameworks.", fileType: "Video", category: "HR", tags: ["HR", "Interview"], url: "https://www.youtube.com/watch?v=kayOhGRcNt4", embedId: "kayOhGRcNt4" },
+  { title: "System Design Intro", description: "Fundamentals of scalable systems, load balancing, and caching.", fileType: "Video", category: "Technical", tags: ["Technical", "Design"], url: "https://www.youtube.com/watch?v=FSR1s2b-l_I", embedId: "FSR1s2b-l_I" },
 ];
 
 const TABS: { label: string; value: Category | "All" }[] = [
@@ -57,6 +59,7 @@ const StudyMaterials = () => {
   const [activeTab, setActiveTab] = useState<Category | "All">("All");
   const [search, setSearch] = useState("");
   const [bookmarked, setBookmarked] = useState<Set<string>>(new Set());
+  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null);
 
   const toggleBookmark = (title: string) => {
     setBookmarked((prev) => {
@@ -65,6 +68,14 @@ const StudyMaterials = () => {
       else next.add(title);
       return next;
     });
+  };
+
+  const handleView = (material: Material) => {
+    if (material.embedId) {
+      setSelectedMaterial(material);
+    } else {
+      window.open(material.url, "_blank", "noopener,noreferrer");
+    }
   };
 
   const filtered = MATERIALS.filter((m) => {
@@ -133,7 +144,6 @@ const StudyMaterials = () => {
                   className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(217_91%_60%/0.15)] hover:-translate-y-1 transition-all duration-300 flex flex-col"
                   style={{ borderRadius: 12 }}
                 >
-                  {/* Top row */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center">
                       <CatIcon className="w-5 h-5 text-primary" />
@@ -144,11 +154,9 @@ const StudyMaterials = () => {
                     </span>
                   </div>
 
-                  {/* Content */}
                   <h3 className="text-sm font-bold text-foreground mb-1">{material.title}</h3>
                   <p className="text-xs text-muted-foreground leading-relaxed mb-3 flex-1">{material.description}</p>
 
-                  {/* Tags */}
                   <div className="flex flex-wrap gap-1.5 mb-4">
                     {material.tags.map((tag) => (
                       <span key={tag} className="text-[10px] font-medium bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
@@ -157,9 +165,8 @@ const StudyMaterials = () => {
                     ))}
                   </div>
 
-                  {/* Bottom */}
                   <div className="flex items-center justify-between">
-                    <Button size="sm" className="text-xs font-semibold h-8 px-4 rounded-lg">
+                    <Button size="sm" className="text-xs font-semibold h-8 px-4 rounded-lg" onClick={() => handleView(material)}>
                       View
                     </Button>
                     <button
@@ -189,6 +196,46 @@ const StudyMaterials = () => {
           )}
         </div>
       </main>
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {selectedMaterial && selectedMaterial.embedId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            onClick={() => setSelectedMaterial(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-4xl bg-card rounded-2xl border border-border shadow-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h2 className="text-base font-bold text-foreground truncate pr-4">{selectedMaterial.title}</h2>
+                <button
+                  onClick={() => setSelectedMaterial(null)}
+                  className="p-1.5 rounded-lg hover:bg-muted transition-colors"
+                >
+                  <X className="w-5 h-5 text-muted-foreground" />
+                </button>
+              </div>
+              <div className="aspect-video w-full">
+                <iframe
+                  src={`https://www.youtube.com/embed/${selectedMaterial.embedId}?autoplay=1`}
+                  title={selectedMaterial.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
