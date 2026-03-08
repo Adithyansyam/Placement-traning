@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import StudyMaterials from "./pages/StudyMaterials";
+import CompanyPrep from "./pages/CompanyPrep";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
