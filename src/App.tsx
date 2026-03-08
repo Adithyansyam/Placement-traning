@@ -12,6 +12,7 @@ import CompanyPrep from "./pages/CompanyPrep";
 import CodingChallenges from "./pages/CodingChallenges";
 import MockTests from "./pages/MockTests";
 import Progress from "./pages/Progress";
+import SkillGap from "./pages/SkillGap";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/coding" element={<CodingChallenges />} />
           <Route path="/mock-tests" element={<MockTests />} />
           <Route path="/progress" element={<Progress />} />
+          <Route path="/skill-gap" element={<SkillGap />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
