@@ -34,7 +34,7 @@ const Login = () => {
     await new Promise((r) => setTimeout(r, 1200));
     setIsLoading(false);
     toast.success(`Welcome back! Signed in as ${role}.`);
-    navigate("/");
+    navigate("/dashboard");
   };
 
   const roles: Role[] = ["Student", "Admin", "Placement Cell"];
