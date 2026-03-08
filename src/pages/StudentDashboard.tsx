@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   ClipboardCheck, Target, Flame, Gauge, ArrowRight, Calendar
 } from "lucide-react";
