@@ -13,6 +13,7 @@ import CodingChallenges from "./pages/CodingChallenges";
 import MockTests from "./pages/MockTests";
 import Progress from "./pages/Progress";
 import SkillGap from "./pages/SkillGap";
+import StudentProfile from "./pages/StudentProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
