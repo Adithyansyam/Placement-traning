@@ -31,6 +31,7 @@ const upcomingTests = [
 ];
 
 const StudentDashboard = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
