@@ -76,7 +76,7 @@ const AdminNav = () => {
                 {[
                   { icon: User, label: "Profile", action: () => {} },
                   { icon: Settings, label: "Settings", action: () => {} },
-                  { icon: LogOut, label: "Logout", action: () => navigate("/login") },
+                  { icon: LogOut, label: "Logout", action: () => { logout(); navigate("/login"); } },
                 ].map((item) => (
                   <button
                     key={item.label}
