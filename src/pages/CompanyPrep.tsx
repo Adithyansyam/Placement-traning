@@ -115,7 +115,7 @@ const COMPANIES: Company[] = [
     ],
   },
   {
-    name: "HCL", abbr: "HCL", color: "hsl(200 60% 40%)", materials: 4,
+    name: "HCL", abbr: "HCL", color: "hsl(310 60% 50%)", materials: 4,
     eligibility: "60% throughout",
     branches: "CSE, IT, ECE, EEE, MECH",
     rounds: ["Online Test", "Technical Interview", "HR Interview"],
