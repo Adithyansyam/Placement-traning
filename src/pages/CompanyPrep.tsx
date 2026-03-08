@@ -39,7 +39,7 @@ const COMPANIES: Company[] = [
     ],
   },
   {
-    name: "Infosys", abbr: "INF", color: "hsl(200 80% 45%)", materials: 6,
+    name: "Infosys", abbr: "INF", color: "hsl(280 80% 58%)", materials: 6,
     eligibility: "60% throughout, no active backlogs",
     branches: "CSE, IT, ECE, EEE",
     rounds: ["InfyTQ Online Test", "Technical Interview", "HR Interview"],
