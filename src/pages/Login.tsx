@@ -97,8 +97,11 @@ const Login = () => {
               className="w-52 h-52 mx-auto mb-6 rounded-2xl object-cover"
               style={{ boxShadow: "0 16px 40px -8px rgba(0,0,0,0.25)" }}
             />
-            <p className="text-primary-foreground/80 text-sm leading-relaxed max-w-[200px] mx-auto">
-              Master your skills and ace your placements
+            <h3 className="text-primary-foreground font-bold text-lg mb-1">
+              Placement Training
+            </h3>
+            <p className="text-primary-foreground/75 text-sm leading-relaxed max-w-[220px] mx-auto">
+              Sharpen your skills, crack interviews, and land your dream job with expert-led training.
             </p>
           </div>
         </div>
