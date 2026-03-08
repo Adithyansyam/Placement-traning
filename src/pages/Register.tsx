@@ -109,8 +109,7 @@ const Register = () => {
     <div className="min-h-screen flex">
       {/* Left Panel */}
       <div
-        className="hidden lg:flex lg:w-[45%] flex-col justify-center items-center px-16 relative overflow-hidden"
-        style={{ backgroundColor: "hsl(224, 76%, 40%)" }}
+        className="hidden lg:flex lg:w-[45%] flex-col justify-center items-center px-16 relative overflow-hidden gradient-bg"
       >
         <div className="absolute w-[500px] h-[500px] rounded-full border border-white/5 -top-32 -left-32" />
         <div className="absolute w-[300px] h-[300px] rounded-full border border-white/5 bottom-20 -right-20" />
