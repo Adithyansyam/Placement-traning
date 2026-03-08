@@ -10,6 +10,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import StudyMaterials from "./pages/StudyMaterials";
 import CompanyPrep from "./pages/CompanyPrep";
 import CodingChallenges from "./pages/CodingChallenges";
+import MockTests from "./pages/MockTests";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/study-materials" element={<StudyMaterials />} />
           <Route path="/company-prep" element={<CompanyPrep />} />
           <Route path="/coding" element={<CodingChallenges />} />
+          <Route path="/mock-tests" element={<MockTests />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
