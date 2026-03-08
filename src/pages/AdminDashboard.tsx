@@ -124,7 +124,7 @@ const AdminDashboard = () => {
                   <h3 className="font-semibold text-foreground mb-4">Branch-wise Readiness Scores</h3>
                   <ResponsiveContainer width="100%" height={280}>
                     <BarChart data={BRANCH_DATA}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 32% 91%)" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis dataKey="branch" tick={{ fontSize: 12 }} />
                       <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip

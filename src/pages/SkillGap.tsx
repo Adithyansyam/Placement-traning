@@ -151,8 +151,7 @@ const SkillGap = () => {
         {showResults && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             {/* Match Score Banner */}
-            <div className="rounded-xl p-6 mb-8 text-center text-primary-foreground"
-              style={{ background: "linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 48%))" }}>
+            <div className="rounded-2xl p-6 mb-8 text-center text-primary-foreground gradient-bg">
               <p className="text-lg opacity-90 mb-1">Your Match Score</p>
               <p className="text-4xl font-bold">{result.matchPercent}% Match with {company} {role} Role</p>
             </div>
