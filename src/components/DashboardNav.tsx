@@ -88,9 +88,9 @@ const DashboardNav = () => {
             {dropdownOpen && (
               <div className="absolute right-0 top-full mt-1 w-44 bg-card border border-border rounded-xl shadow-lg py-1 z-50">
                 {[
-                  { icon: User, label: "Profile", action: () => {} },
+                  { icon: User, label: "Profile", action: () => navigate("/profile") },
                   { icon: Settings, label: "Settings", action: () => {} },
-                  { icon: LogOut, label: "Logout", action: () => navigate("/login") },
+                  { icon: LogOut, label: "Logout", action: () => { logout(); navigate("/login"); } },
                 ].map((item) => (
                   <button
                     key={item.label}
