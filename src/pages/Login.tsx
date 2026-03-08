@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, User } from "lucide-react";
+import placementImg from "@/assets/placement-training.png";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
