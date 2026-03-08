@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Zap, Bell, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 
 const LINKS = [
   { label: "Overview", to: "/placement" },
