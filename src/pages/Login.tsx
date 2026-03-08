@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, User } from "lucide-react";
+import placementImg from "@/assets/placement-training.png";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -58,9 +59,11 @@ const Login = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            <div className="w-20 h-20 rounded-3xl bg-primary-foreground/10 backdrop-blur-sm mx-auto mb-8 flex items-center justify-center border border-primary-foreground/20">
-              <span className="text-primary-foreground font-bold text-3xl">PT</span>
-            </div>
+            <img
+              src={placementImg}
+              alt="Placement Training"
+              className="w-64 h-64 mx-auto mb-6 rounded-3xl object-cover drop-shadow-2xl"
+            />
             <h2 className="text-4xl font-bold text-primary-foreground mb-4">
               Placement Training
             </h2>
