@@ -38,8 +38,10 @@ const Login = () => {
     setIsLoading(true);
     await new Promise((r) => setTimeout(r, 1200));
     setIsLoading(false);
-    toast.success(`Welcome back! Signed in as ${role}.`);
-    navigate("/dashboard");
+    const mappedRole = ROLE_MAP[role];
+    login(mappedRole);
+    toast.success("Welcome back! ✓");
+    navigate(REDIRECT_MAP[mappedRole]);
   };
 
   const roles: Role[] = ["Student", "Admin", "Placement Cell"];
