@@ -284,7 +284,7 @@ const StudentProfile = () => {
                     </div>
                   ))}
                 </div>
-                <Button className="mt-5 gap-1"><Link2 className="h-4 w-4" /> Save Links</Button>
+                <Button className="mt-5 gap-1" onClick={() => toast.success("Profile updated ✓")}><Link2 className="h-4 w-4" /> Save Links</Button>
               </CardContent>
             </Card>
           </TabsContent>
