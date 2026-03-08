@@ -1,212 +1,215 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, User } from "lucide-react";
-import placementImg from "@/assets/placement-training.png";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
-const InputField = ({
-  label,
-  icon: Icon,
-  type = "text",
-  value,
-  onChange,
-  required,
-  children,
-}: {
-  label: string;
-  icon: React.ElementType;
-  type?: string;
-  value: string;
-  onChange: (v: string) => void;
-  required?: boolean;
-  children?: React.ReactNode;
-}) => (
-  <div>
-    <label className="block text-sm font-semibold text-primary mb-2">{label}</label>
-    <div className="relative">
-      <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground peer-focus:text-primary transition-colors duration-300" />
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="peer w-full pl-12 pr-14 py-4 rounded-2xl border-2 border-muted bg-muted/50 text-foreground focus:outline-none focus:border-primary focus:bg-card focus:shadow-[0_0_0_4px_hsl(217_91%_60%/0.08)] transition-all duration-300 text-sm"
-        required={required}
-      />
-      {children}
-    </div>
-  </div>
-);
+type Role = "Student" | "Admin" | "Placement Cell";
 
 const Login = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [role, setRole] = useState<Role>("Student");
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate = useNavigate();
+
+  const validate = () => {
+    const errs: { email?: string; password?: string } = {};
+    if (!email.trim()) errs.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Enter a valid email";
+    if (!password.trim()) errs.password = "Password is required";
+    else if (password.length < 6) errs.password = "Password must be at least 6 characters";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 1200));
     setIsLoading(false);
-    toast.success(isSignUp ? "Account created successfully!" : "Welcome back!");
+    toast.success(`Welcome back! Signed in as ${role}.`);
     navigate("/");
   };
 
+  const roles: Role[] = ["Student", "Admin", "Placement Cell"];
+
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
-      style={{ background: "var(--login-gradient)" }}
-    >
-      {/* Background circles */}
-      {[0, 1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="absolute rounded-full border border-primary-foreground/8 animate-pulse"
-          style={{
-            width: 150 + i * 120,
-            height: 150 + i * 120,
-            top: `${[10, 60, 20, 70][i]}%`,
-            left: `${[5, 70, 50, 15][i]}%`,
-            transform: "translate(-50%, -50%)",
-            animationDuration: `${6 + i * 2}s`,
-          }}
-        />
-      ))}
-
-      {/* Main white card */}
-      <div
-        className="relative z-10 w-full max-w-[900px] bg-card rounded-[2rem] overflow-hidden flex flex-col lg:flex-row"
-        style={{ boxShadow: "0 30px 80px -20px rgba(0,0,0,0.3)" }}
+    <div className="min-h-screen flex">
+      {/* Left Panel — Deep Blue */}
+      <div className="hidden lg:flex lg:w-[45%] flex-col justify-center items-center px-16 relative overflow-hidden"
+        style={{ backgroundColor: "hsl(224, 76%, 40%)" }}
       >
-        {/* Left - Image area */}
-        <div
-          className="hidden lg:flex lg:w-[42%] items-center justify-center p-8 relative"
-          style={{ background: "var(--login-gradient)" }}
+        {/* Decorative circles */}
+        <div className="absolute w-[500px] h-[500px] rounded-full border border-white/5 -top-32 -left-32" />
+        <div className="absolute w-[300px] h-[300px] rounded-full border border-white/5 bottom-20 -right-20" />
+        <div className="absolute w-[200px] h-[200px] rounded-full bg-white/[0.03] top-1/2 left-10" />
+
+        <motion.div
+          className="relative z-10 max-w-md"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <div className="absolute w-40 h-40 rounded-full border border-primary-foreground/10 top-[8%] left-[5%]" />
-          <div className="absolute w-24 h-24 rounded-full bg-primary-foreground/5 bottom-[15%] right-[10%]" />
-
-          <div className="relative z-10 text-center">
-            <img
-              src={placementImg}
-              alt="Placement Training"
-              className="w-52 h-52 mx-auto mb-6 rounded-2xl object-cover"
-              style={{ boxShadow: "0 16px 40px -8px rgba(0,0,0,0.25)" }}
-            />
-            <h3 className="text-primary-foreground font-bold text-lg mb-1">
-              Placement Training
-            </h3>
-            <p className="text-primary-foreground/75 text-sm leading-relaxed max-w-[220px] mx-auto">
-              Sharpen your skills, crack interviews, and land your dream job with expert-led training.
-            </p>
+          <div className="flex items-center gap-2.5 mb-8">
+            <Zap className="w-8 h-8 text-white" strokeWidth={2.5} />
+            <span className="text-2xl font-bold text-white tracking-tight">PlacePrep</span>
           </div>
-        </div>
-
-        {/* Right - Form */}
-        <div className="flex-1 p-8 sm:p-10 lg:p-12 flex flex-col justify-center">
-          {/* Mobile image */}
-          <div className="lg:hidden flex justify-center mb-6">
-            <img
-              src={placementImg}
-              alt="Placement Training"
-              className="w-16 h-16 rounded-xl object-cover"
-              style={{ boxShadow: "var(--login-glow)" }}
-            />
-          </div>
-
-          {/* Header */}
-          <div className="mb-7">
-            <h1 className="text-3xl font-bold text-foreground">
-              {isSignUp ? "Create an account" : "Welcome back"}
-            </h1>
-            <p className="text-muted-foreground mt-2 text-sm">
-              {isSignUp ? "Enter your details to get started" : "Enter your credentials to sign in"}
-            </p>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex bg-muted rounded-2xl p-1.5 mb-7">
-            {["Sign In", "Sign Up"].map((label, i) => (
-              <button
-                key={label}
-                onClick={() => setIsSignUp(i === 1)}
-                className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all duration-300 relative ${
-                  (i === 0 && !isSignUp) || (i === 1 && isSignUp)
-                    ? "text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {((i === 0 && !isSignUp) || (i === 1 && isSignUp)) && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 rounded-xl"
-                    style={{ background: "var(--login-gradient)", boxShadow: "var(--login-glow)" }}
-                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                  />
-                )}
-                <span className="relative z-10">{label}</span>
-              </button>
+          <h1 className="text-4xl font-extrabold text-white leading-tight tracking-tight">
+            Welcome Back to<br />PlacePrep
+          </h1>
+          <p className="mt-4 text-white/60 text-base leading-relaxed">
+            Your one-stop platform for placement preparation. Practice, learn, and crack your dream company.
+          </p>
+          <div className="mt-10 flex items-center gap-4">
+            {[
+              { value: "10K+", label: "Students" },
+              { value: "500+", label: "Questions" },
+              { value: "95%", label: "Success Rate" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className="text-2xl font-bold text-white">{stat.value}</div>
+                <div className="text-xs text-white/50 mt-0.5">{stat.label}</div>
+              </div>
             ))}
           </div>
+        </motion.div>
+      </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <AnimatePresence mode="popLayout">
-              {isSignUp && (
-                <motion.div
-                  key="name"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
+      {/* Right Panel — Form */}
+      <div className="flex-1 flex items-center justify-center bg-background px-6 py-12">
+        <motion.div
+          className="w-full max-w-md"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* Mobile logo */}
+          <div className="lg:hidden flex items-center gap-2 mb-8">
+            <Zap className="w-6 h-6 text-primary" strokeWidth={2.5} />
+            <span className="text-lg font-bold text-primary">PlacePrep</span>
+          </div>
+
+          <div className="bg-card rounded-2xl border border-border p-8 shadow-lg" style={{ borderRadius: 16 }}>
+            <h2 className="text-2xl font-extrabold text-foreground mb-1">Sign In</h2>
+            <p className="text-sm text-muted-foreground mb-6">Enter your credentials to continue</p>
+
+            {/* Role Selector */}
+            <div className="flex bg-muted rounded-xl p-1 mb-6">
+              {roles.map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setRole(r)}
+                  className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all duration-200 ${
+                    role === r
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
-                  <InputField label="Full Name" icon={User} value={name} onChange={setName} />
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  {r}
+                </button>
+              ))}
+            </div>
 
-            <InputField label="Email" icon={Mail} type="email" value={email} onChange={setEmail} required />
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: undefined })); }}
+                    placeholder="you@example.com"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${
+                      errors.email ? "border-destructive" : "border-border"
+                    }`}
+                  />
+                </div>
+                {errors.email && <p className="text-xs text-destructive mt-1 font-medium">{errors.email}</p>}
+              </div>
 
-            <InputField label="Password" icon={Lock} type={showPassword ? "text" : "password"} value={password} onChange={setPassword} required>
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </InputField>
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined })); }}
+                    placeholder="••••••••"
+                    className={`w-full pl-10 pr-12 py-3 rounded-xl border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${
+                      errors.password ? "border-destructive" : "border-border"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {errors.password && <p className="text-xs text-destructive mt-1 font-medium">{errors.password}</p>}
+              </div>
 
-            {!isSignUp && (
-              <div className="flex justify-end">
+              {/* Remember + Forgot */}
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30 accent-primary"
+                  />
+                  <span className="text-xs text-muted-foreground font-medium">Remember me</span>
+                </label>
                 <button type="button" className="text-xs text-primary hover:underline font-semibold">
-                  Forgot password?
+                  Forgot Password?
                 </button>
               </div>
-            )}
 
-            <motion.button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-4 rounded-2xl text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-70 mt-2"
-              style={{ background: "var(--login-gradient)", boxShadow: "var(--login-glow)" }}
-              whileHover={{ scale: 1.02, boxShadow: "0 16px 48px -4px hsl(217 91% 60% / 0.5)" }}
-              whileTap={{ scale: 0.97 }}
-            >
-              {isLoading ? (
-                <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-              ) : (
-                <>
-                  {isSignUp ? "Create Account" : "Sign In"}
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </motion.button>
-          </form>
-        </div>
+              {/* Submit */}
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 font-semibold text-sm shadow-md shadow-primary/20 gap-2 rounded-xl"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </Button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 my-2">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-xs text-muted-foreground font-medium">OR</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+
+              {/* Register link */}
+              <p className="text-center text-sm text-muted-foreground">
+                Don't have an account?{" "}
+                <button type="button" className="text-primary font-semibold hover:underline">
+                  Register
+                </button>
+              </p>
+            </form>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
