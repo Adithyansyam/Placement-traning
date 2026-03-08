@@ -15,6 +15,7 @@ const ADMIN_LINKS = [
 
 const AdminNav = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
