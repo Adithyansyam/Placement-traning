@@ -112,7 +112,7 @@ const PlacementDashboard = () => {
   const filteredPlaced = PLACED_STUDENTS.filter((s) => reportBranch === "all" || s.branch === reportBranch);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mesh-bg">
       <PlacementNav />
       <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
         <div className="flex gap-2 mb-6">

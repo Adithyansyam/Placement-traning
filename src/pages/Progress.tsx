@@ -103,7 +103,7 @@ export default function Progress() {
   const [timeFilter, setTimeFilter] = useState<typeof FILTERS[number]>("All Time");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         {/* Header */}

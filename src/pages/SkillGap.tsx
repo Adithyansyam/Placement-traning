@@ -93,7 +93,7 @@ const SkillGap = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
       <div className="max-w-5xl mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold text-foreground mb-1">Skill Gap Analyzer</h1>
