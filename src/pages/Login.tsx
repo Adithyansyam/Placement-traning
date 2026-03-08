@@ -203,7 +203,7 @@ const Login = () => {
               {/* Register link */}
               <p className="text-center text-sm text-muted-foreground">
                 Don't have an account?{" "}
-                <button type="button" className="text-primary font-semibold hover:underline">
+                <button type="button" onClick={() => navigate("/register")} className="text-primary font-semibold hover:underline">
                   Register
                 </button>
               </p>
