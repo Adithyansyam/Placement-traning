@@ -35,10 +35,10 @@ const PERF_DATA = [
 ];
 
 const PIE_COLORS = [
-  "hsl(217 91% 48%)",
-  "hsl(217 91% 60%)",
-  "hsl(217 70% 72%)",
-  "hsl(217 50% 84%)",
+  "hsl(258 90% 52%)",
+  "hsl(258 90% 62%)",
+  "hsl(280 80% 68%)",
+  "hsl(310 70% 75%)",
 ];
 
 const ACTIVITY = [
