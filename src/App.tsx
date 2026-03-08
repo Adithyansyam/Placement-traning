@@ -15,6 +15,7 @@ import Progress from "./pages/Progress";
 import SkillGap from "./pages/SkillGap";
 import StudentProfile from "./pages/StudentProfile";
 import AdminDashboard from "./pages/AdminDashboard";
+import PlacementDashboard from "./pages/PlacementDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
