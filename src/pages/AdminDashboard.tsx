@@ -135,7 +135,7 @@ const AdminDashboard = () => {
                           fontSize: 13,
                         }}
                       />
-                      <Bar dataKey="score" fill="hsl(217 91% 60%)" radius={[6, 6, 0, 0]} />
+                      <Bar dataKey="score" fill="hsl(258 90% 62%)" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>

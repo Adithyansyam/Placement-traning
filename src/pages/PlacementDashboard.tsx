@@ -286,7 +286,7 @@ const PlacementDashboard = () => {
                     <XAxis type="number" tick={{ fontSize: 12 }} domain={[0, 100]} />
                     <YAxis dataKey="branch" type="category" tick={{ fontSize: 12 }} width={50} />
                     <Tooltip contentStyle={{ background: "hsl(0 0% 100%)", border: "1px solid hsl(214 32% 91%)", borderRadius: 8, fontSize: 13 }} />
-                    <Bar dataKey="percent" fill="hsl(217 91% 60%)" radius={[0, 6, 6, 0]} />
+                    <Bar dataKey="percent" fill="hsl(258 90% 62%)" radius={[0, 6, 6, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
