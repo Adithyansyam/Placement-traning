@@ -109,8 +109,7 @@ const Register = () => {
     <div className="min-h-screen flex">
       {/* Left Panel */}
       <div
-        className="hidden lg:flex lg:w-[45%] flex-col justify-center items-center px-16 relative overflow-hidden"
-        style={{ backgroundColor: "hsl(224, 76%, 40%)" }}
+        className="hidden lg:flex lg:w-[45%] flex-col justify-center items-center px-16 relative overflow-hidden gradient-bg"
       >
         <div className="absolute w-[500px] h-[500px] rounded-full border border-white/5 -top-32 -left-32" />
         <div className="absolute w-[300px] h-[300px] rounded-full border border-white/5 bottom-20 -right-20" />
@@ -148,7 +147,7 @@ const Register = () => {
       </div>
 
       {/* Right Panel */}
-      <div className="flex-1 flex items-center justify-center bg-background px-6 py-10">
+      <div className="flex-1 flex items-center justify-center bg-background mesh-bg px-6 py-10">
         <motion.div
           className="w-full max-w-md"
           initial={{ opacity: 0, y: 20 }}
@@ -175,7 +174,7 @@ const Register = () => {
             )}
           </AnimatePresence>
 
-          <div className="bg-card rounded-2xl border border-border p-8 shadow-lg" style={{ borderRadius: 16 }}>
+          <div className="glass-card rounded-2xl border border-border/30 p-8">
             <h2 className="text-2xl font-extrabold text-foreground mb-1">Create Your Account</h2>
             <p className="text-sm text-muted-foreground mb-5">
               Step {step} of 2 — {step === 1 ? "Basic Info" : "Academic Info"}

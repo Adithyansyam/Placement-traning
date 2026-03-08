@@ -35,10 +35,10 @@ const PERF_DATA = [
 ];
 
 const PIE_COLORS = [
-  "hsl(217 91% 48%)",
-  "hsl(217 91% 60%)",
-  "hsl(217 70% 72%)",
-  "hsl(217 50% 84%)",
+  "hsl(258 90% 52%)",
+  "hsl(258 90% 62%)",
+  "hsl(280 80% 68%)",
+  "hsl(310 70% 75%)",
 ];
 
 const ACTIVITY = [
@@ -84,7 +84,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mesh-bg">
       <AdminNav />
       <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
         {/* Simple tab switcher using nav links — we handle overview & students inline */}
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
                   <h3 className="font-semibold text-foreground mb-4">Branch-wise Readiness Scores</h3>
                   <ResponsiveContainer width="100%" height={280}>
                     <BarChart data={BRANCH_DATA}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 32% 91%)" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis dataKey="branch" tick={{ fontSize: 12 }} />
                       <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
                           fontSize: 13,
                         }}
                       />
-                      <Bar dataKey="score" fill="hsl(217 91% 60%)" radius={[6, 6, 0, 0]} />
+                      <Bar dataKey="score" fill="hsl(258 90% 62%)" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>

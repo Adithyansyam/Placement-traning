@@ -75,7 +75,7 @@ const StudyMaterials = () => {
   });
 
   return (
-    <div className="min-h-screen bg-accent/30">
+    <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
       <main className="pt-14">
         <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">

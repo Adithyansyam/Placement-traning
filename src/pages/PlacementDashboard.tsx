@@ -112,7 +112,7 @@ const PlacementDashboard = () => {
   const filteredPlaced = PLACED_STUDENTS.filter((s) => reportBranch === "all" || s.branch === reportBranch);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mesh-bg">
       <PlacementNav />
       <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
         <div className="flex gap-2 mb-6">
@@ -146,7 +146,7 @@ const PlacementDashboard = () => {
                     <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} />
                     <Tooltip contentStyle={{ background: "hsl(0 0% 100%)", border: "1px solid hsl(214 32% 91%)", borderRadius: 8, fontSize: 13 }} />
-                    <Bar dataKey="count" fill="hsl(217 91% 60%)" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="count" fill="hsl(258 90% 62%)" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -286,7 +286,7 @@ const PlacementDashboard = () => {
                     <XAxis type="number" tick={{ fontSize: 12 }} domain={[0, 100]} />
                     <YAxis dataKey="branch" type="category" tick={{ fontSize: 12 }} width={50} />
                     <Tooltip contentStyle={{ background: "hsl(0 0% 100%)", border: "1px solid hsl(214 32% 91%)", borderRadius: 8, fontSize: 13 }} />
-                    <Bar dataKey="percent" fill="hsl(217 91% 60%)" radius={[0, 6, 6, 0]} />
+                    <Bar dataKey="percent" fill="hsl(258 90% 62%)" radius={[0, 6, 6, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>

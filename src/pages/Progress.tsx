@@ -48,10 +48,10 @@ const TIME_SPENT = [
 ];
 
 const PIE_COLORS = [
-  "hsl(217,91%,60%)",
-  "hsl(217,91%,48%)",
-  "hsl(213,100%,70%)",
-  "hsl(210,60%,55%)",
+  "hsl(258,90%,62%)",
+  "hsl(280,80%,58%)",
+  "hsl(310,70%,65%)",
+  "hsl(258,60%,75%)",
   "hsl(215,50%,42%)",
   "hsl(210,40%,75%)",
 ];
@@ -103,7 +103,7 @@ export default function Progress() {
   const [timeFilter, setTimeFilter] = useState<typeof FILTERS[number]>("All Time");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         {/* Header */}

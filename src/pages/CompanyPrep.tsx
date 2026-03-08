@@ -19,7 +19,7 @@ interface Company {
 
 const COMPANIES: Company[] = [
   {
-    name: "TCS", abbr: "TCS", color: "hsl(217 91% 55%)", materials: 8,
+    name: "TCS", abbr: "TCS", color: "hsl(258 90% 62%)", materials: 8,
     eligibility: "60% throughout, no active backlogs",
     branches: "CSE, IT, ECE, EEE, MECH, CIVIL",
     rounds: ["TCS NQT (Online Test)", "Technical Interview", "Managerial Interview", "HR Interview"],
@@ -39,7 +39,7 @@ const COMPANIES: Company[] = [
     ],
   },
   {
-    name: "Infosys", abbr: "INF", color: "hsl(200 80% 45%)", materials: 6,
+    name: "Infosys", abbr: "INF", color: "hsl(280 80% 58%)", materials: 6,
     eligibility: "60% throughout, no active backlogs",
     branches: "CSE, IT, ECE, EEE",
     rounds: ["InfyTQ Online Test", "Technical Interview", "HR Interview"],
@@ -96,7 +96,7 @@ const COMPANIES: Company[] = [
     ],
   },
   {
-    name: "Cognizant", abbr: "CTS", color: "hsl(210 70% 45%)", materials: 4,
+    name: "Cognizant", abbr: "CTS", color: "hsl(258 70% 55%)", materials: 4,
     eligibility: "60% throughout, no active backlogs",
     branches: "CSE, IT, ECE",
     rounds: ["GenC Online Test", "Technical Interview", "HR Interview"],
@@ -115,7 +115,7 @@ const COMPANIES: Company[] = [
     ],
   },
   {
-    name: "HCL", abbr: "HCL", color: "hsl(200 60% 40%)", materials: 4,
+    name: "HCL", abbr: "HCL", color: "hsl(310 60% 50%)", materials: 4,
     eligibility: "60% throughout",
     branches: "CSE, IT, ECE, EEE, MECH",
     rounds: ["Online Test", "Technical Interview", "HR Interview"],
@@ -183,7 +183,7 @@ const CompanyPrep = () => {
   const company = COMPANIES.find((c) => c.name === selected);
 
   return (
-    <div className="min-h-screen bg-accent/30">
+    <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
       <main className="pt-14">
         <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
