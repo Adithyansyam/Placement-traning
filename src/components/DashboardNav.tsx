@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Zap, Bell, ChevronDown, User, Settings, LogOut } from "lucide-react";
+import { Laptop, Bell, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const NAV_LINKS = [
@@ -32,7 +32,7 @@ const DashboardNav = () => {
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-14">
         <div className="flex items-center gap-2 shrink-0">
           <div className="w-7 h-7 rounded-lg gradient-bg flex items-center justify-center">
-            <Zap className="w-4 h-4 text-primary-foreground" strokeWidth={2.5} />
+            <Laptop className="w-4 h-4 text-primary-foreground" strokeWidth={2.5} />
           </div>
           <span className="text-base font-bold gradient-text tracking-tight">PlacePrep</span>
         </div>
