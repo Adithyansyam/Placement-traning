@@ -174,7 +174,7 @@ const Register = () => {
             )}
           </AnimatePresence>
 
-          <div className="bg-card rounded-2xl border border-border p-8 shadow-lg" style={{ borderRadius: 16 }}>
+          <div className="glass-card rounded-2xl border border-border/30 p-8">
             <h2 className="text-2xl font-extrabold text-foreground mb-1">Create Your Account</h2>
             <p className="text-sm text-muted-foreground mb-5">
               Step {step} of 2 — {step === 1 ? "Basic Info" : "Academic Info"}
