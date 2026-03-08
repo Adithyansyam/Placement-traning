@@ -113,7 +113,7 @@ const StudentProfile = () => {
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row items-start gap-5">
               {/* Avatar */}
-              <div className="h-20 w-20 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold shrink-0">
+              <div className="h-20 w-20 rounded-2xl gradient-bg flex items-center justify-center text-primary-foreground text-2xl font-bold shrink-0 shadow-lg shadow-primary/25">
                 {initials}
               </div>
               {/* Info */}
