@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Zap, Bell, ChevronDown, User, Settings, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const NAV_LINKS = [
   { label: "Dashboard", to: "/dashboard" },
