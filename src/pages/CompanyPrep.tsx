@@ -96,7 +96,7 @@ const COMPANIES: Company[] = [
     ],
   },
   {
-    name: "Cognizant", abbr: "CTS", color: "hsl(210 70% 45%)", materials: 4,
+    name: "Cognizant", abbr: "CTS", color: "hsl(258 70% 55%)", materials: 4,
     eligibility: "60% throughout, no active backlogs",
     branches: "CSE, IT, ECE",
     rounds: ["GenC Online Test", "Technical Interview", "HR Interview"],
