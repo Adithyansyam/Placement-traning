@@ -14,6 +14,7 @@ import MockTests from "./pages/MockTests";
 import Progress from "./pages/Progress";
 import SkillGap from "./pages/SkillGap";
 import StudentProfile from "./pages/StudentProfile";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,8 @@ const App = () => (
           <Route path="/progress" element={<Progress />} />
           <Route path="/skill-gap" element={<SkillGap />} />
           <Route path="/profile" element={<StudentProfile />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/students" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
