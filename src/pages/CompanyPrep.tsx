@@ -19,7 +19,7 @@ interface Company {
 
 const COMPANIES: Company[] = [
   {
-    name: "TCS", abbr: "TCS", color: "hsl(217 91% 55%)", materials: 8,
+    name: "TCS", abbr: "TCS", color: "hsl(258 90% 62%)", materials: 8,
     eligibility: "60% throughout, no active backlogs",
     branches: "CSE, IT, ECE, EEE, MECH, CIVIL",
     rounds: ["TCS NQT (Online Test)", "Technical Interview", "Managerial Interview", "HR Interview"],
