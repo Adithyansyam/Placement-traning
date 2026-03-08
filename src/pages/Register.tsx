@@ -147,7 +147,7 @@ const Register = () => {
       </div>
 
       {/* Right Panel */}
-      <div className="flex-1 flex items-center justify-center bg-background px-6 py-10">
+      <div className="flex-1 flex items-center justify-center bg-background mesh-bg px-6 py-10">
         <motion.div
           className="w-full max-w-md"
           initial={{ opacity: 0, y: 20 }}
