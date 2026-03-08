@@ -21,70 +21,62 @@ const AdminNav = () => {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false);
-      }
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) setDropdownOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-14">
         <div className="flex items-center gap-2 shrink-0">
-          <Zap className="w-5 h-5 text-primary" strokeWidth={2.5} />
-          <span className="text-base font-bold text-primary tracking-tight">PlacePrep</span>
-          <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0 ml-1">ADMIN</Badge>
+          <div className="w-7 h-7 rounded-lg gradient-bg flex items-center justify-center">
+            <Zap className="w-4 h-4 text-primary-foreground" strokeWidth={2.5} />
+          </div>
+          <span className="text-base font-bold gradient-text tracking-tight">PlacePrep</span>
+          <Badge className="gradient-bg text-primary-foreground text-[10px] px-1.5 py-0 ml-1 border-0">ADMIN</Badge>
         </div>
 
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-0.5">
           {ADMIN_LINKS.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               end={link.to === "/admin"}
               className={({ isActive }) =>
-                `px-3 py-1.5 text-[13px] font-medium rounded-lg transition-colors relative ${
-                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                `px-3 py-1.5 text-[13px] font-medium rounded-lg transition-all duration-200 relative ${
+                  isActive ? "text-primary bg-primary/8" : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                 }`
               }
             >
               {({ isActive }) => (
-                <>
-                  {link.label}
-                  {isActive && <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-primary rounded-full" />}
-                </>
+                <>{link.label}{isActive && <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full gradient-bg" />}</>
               )}
             </NavLink>
           ))}
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <button className="relative p-2 rounded-lg hover:bg-muted transition-colors">
+        <div className="flex items-center gap-2 shrink-0">
+          <button className="relative p-2 rounded-xl hover:bg-muted/60 transition-all duration-200">
             <Bell className="w-[18px] h-[18px] text-muted-foreground" />
-            <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center">5</span>
+            <span className="absolute top-1 right-1 w-4 h-4 gradient-bg text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center">5</span>
           </button>
           <div ref={dropdownRef} className="relative">
-            <button onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-muted transition-colors">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">A</div>
+            <button onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-muted/60 transition-all duration-200">
+              <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-primary-foreground font-bold text-xs">A</div>
               <span className="text-sm font-medium text-foreground hidden sm:block">Admin</span>
               <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
             {dropdownOpen && (
-              <div className="absolute right-0 top-full mt-1 w-44 bg-card border border-border rounded-xl shadow-lg py-1 z-50">
+              <div className="absolute right-0 top-full mt-2 w-48 glass-card rounded-xl py-1.5 z-50">
                 {[
                   { icon: User, label: "Profile", action: () => {} },
                   { icon: Settings, label: "Settings", action: () => {} },
                   { icon: LogOut, label: "Logout", action: () => { logout(); navigate("/login"); } },
                 ].map((item) => (
-                  <button
-                    key={item.label}
-                    onClick={() => { setDropdownOpen(false); item.action(); }}
-                    className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                  >
-                    <item.icon className="w-4 h-4 text-muted-foreground" />
-                    {item.label}
+                  <button key={item.label} onClick={() => { setDropdownOpen(false); item.action(); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-muted/60 transition-all duration-200">
+                    <item.icon className="w-4 h-4 text-muted-foreground" />{item.label}
                   </button>
                 ))}
               </div>
