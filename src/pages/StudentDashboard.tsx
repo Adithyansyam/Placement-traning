@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   ClipboardCheck, Target, Flame, Gauge, ArrowRight, Calendar
 } from "lucide-react";
@@ -30,6 +31,7 @@ const upcomingTests = [
 ];
 
 const StudentDashboard = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
@@ -123,7 +125,7 @@ const StudentDashboard = () => {
                         <span className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3" /> {test.date}</span>
                       </div>
                     </div>
-                    <Button size="sm" className="shrink-0 text-xs font-semibold h-8 px-3 gap-1 rounded-lg gradient-bg border-0 hover:opacity-90">
+                    <Button size="sm" className="shrink-0 text-xs font-semibold h-8 px-3 gap-1 rounded-lg gradient-bg border-0 hover:opacity-90" onClick={() => navigate("/mock-tests")}>
                       Attempt <ArrowRight className="w-3 h-3" />
                     </Button>
                   </div>
