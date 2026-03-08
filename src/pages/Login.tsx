@@ -225,36 +225,6 @@ const Login = () => {
             </motion.button>
           </form>
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-7">
-            <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground font-medium">or</span>
-            <div className="flex-1 h-px bg-border" />
-          </div>
-
-          {/* Social */}
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { name: "Google", icon: "G" },
-              { name: "GitHub", icon: "⌘" },
-            ].map((provider) => (
-              <motion.button
-                key={provider.name}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center justify-center gap-2.5 py-3 rounded-xl border border-border bg-card text-foreground text-sm font-medium hover:bg-accent transition-colors"
-              >
-                <span className="text-base">{provider.icon}</span>
-                {provider.name}
-              </motion.button>
-            ))}
-          </div>
-
-          <p className="text-center text-xs text-muted-foreground mt-8">
-            By continuing, you agree to our{" "}
-            <a href="#" className="text-primary hover:underline font-medium">Terms</a> and{" "}
-            <a href="#" className="text-primary hover:underline font-medium">Privacy Policy</a>
-          </p>
         </motion.div>
       </div>
     </div>
