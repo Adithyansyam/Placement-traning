@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Laptop, Bell, ChevronDown, User, Settings, LogOut } from "lucide-react";
+import { Laptop, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const NAV_LINKS = [
@@ -63,13 +63,6 @@ const DashboardNav = () => {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <button className="relative p-2 rounded-xl hover:bg-muted/60 transition-all duration-200">
-            <Bell className="w-[18px] h-[18px] text-muted-foreground" />
-            <span className="absolute top-1 right-1 w-4 h-4 gradient-bg text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center">
-              3
-            </span>
-          </button>
-
           <div ref={dropdownRef} className="relative">
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}

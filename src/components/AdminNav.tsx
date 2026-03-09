@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Zap, Bell, ChevronDown, User, Settings, LogOut } from "lucide-react";
+import { Zap, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -58,10 +58,6 @@ const AdminNav = () => {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <button className="relative p-2 rounded-xl hover:bg-muted/60 transition-all duration-200">
-            <Bell className="w-[18px] h-[18px] text-muted-foreground" />
-            <span className="absolute top-1 right-1 w-4 h-4 gradient-bg text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center">5</span>
-          </button>
           <div ref={dropdownRef} className="relative">
             <button onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-muted/60 transition-all duration-200">
               <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-primary-foreground font-bold text-xs">A</div>
