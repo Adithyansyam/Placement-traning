@@ -8,6 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 import StudentDashboard from "./pages/StudentDashboard";
 import StudyMaterials from "./pages/StudyMaterials";
 import CompanyPrep from "./pages/CompanyPrep";
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
 
             {/* Student routes */}
+            <Route path="/home" element={<P roles={["student"]}><Home /></P>} />
             <Route path="/dashboard" element={<P roles={["student"]}><StudentDashboard /></P>} />
             <Route path="/materials" element={<P roles={["student"]}><StudyMaterials /></P>} />
             <Route path="/study-materials" element={<P roles={["student"]}><StudyMaterials /></P>} />

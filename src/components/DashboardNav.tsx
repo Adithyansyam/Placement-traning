@@ -4,7 +4,7 @@ import { Laptop, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const NAV_LINKS = [
-  { label: "Dashboard", to: "/dashboard" },
+  { label: "Home", to: "/home" },
   { label: "Study Materials", to: "/study-materials" },
   { label: "Mock Tests", to: "/mock-tests" },
   { label: "Coding", to: "/coding" },
