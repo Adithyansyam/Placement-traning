@@ -83,7 +83,7 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const getModel = () =>
   genAI.getGenerativeModel({
-    model: "gemini-2.0-flash-lite",
+    model: "gemini-2.0-flash",
     systemInstruction: SYSTEM_PROMPT,
   });
 
