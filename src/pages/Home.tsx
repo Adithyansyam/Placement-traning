@@ -70,12 +70,9 @@ const Home = () => {
         }}
       >
         {/* Glow orbs */}
-        <motion.div style={{ x: springX, y: springY }} className="absolute top-20 left-10 w-96 h-96 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, hsl(258 90% 62% / 0.25) 0%, transparent 70%)" }} />
-        <motion.div style={{ x: springX, y: springY }} className="absolute bottom-20 right-10 w-80 h-80 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, hsl(310 70% 60% / 0.2) 0%, transparent 70%)" }} />
-        <motion.div style={{ x: springX, y: springY }} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, hsl(280 80% 58% / 0.08) 0%, transparent 70%)" }} />
+        <motion.div style={{ x: springX, y: springY, background: "radial-gradient(circle, hsl(258 90% 62% / 0.25) 0%, transparent 70%)" }} className="absolute top-20 left-10 w-96 h-96 rounded-full pointer-events-none" />
+        <motion.div style={{ x: springX, y: springY, background: "radial-gradient(circle, hsl(310 70% 60% / 0.2) 0%, transparent 70%)" }} className="absolute bottom-20 right-10 w-80 h-80 rounded-full pointer-events-none" />
+        <motion.div style={{ x: springX, y: springY, background: "radial-gradient(circle, hsl(280 80% 58% / 0.08) 0%, transparent 70%)" }} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none" />
 
         {/* Dotted grid */}
         <div className="absolute inset-0 pointer-events-none opacity-20"
