@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth, type UserRole } from "@/contexts/AuthContext";
 import { getApiUrl } from "@/lib/api";
 
-const REDIRECT_MAP: Record<UserRole, string> = { student: "/dashboard", admin: "/admin", placement: "/placement" };
+const REDIRECT_MAP: Record<UserRole, string> = { student: "/home", admin: "/admin", placement: "/placement" };
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);

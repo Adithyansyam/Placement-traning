@@ -42,7 +42,6 @@ const App = () => (
 
             {/* Student routes */}
             <Route path="/home" element={<P roles={["student"]}><Home /></P>} />
-            <Route path="/dashboard" element={<P roles={["student"]}><StudentDashboard /></P>} />
             <Route path="/materials" element={<P roles={["student"]}><StudyMaterials /></P>} />
             <Route path="/study-materials" element={<P roles={["student"]}><StudyMaterials /></P>} />
             <Route path="/company-prep" element={<P roles={["student"]}><CompanyPrep /></P>} />

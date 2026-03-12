@@ -14,7 +14,7 @@ const NotFound = () => {
       <p className="text-sm text-muted-foreground mb-8 max-w-sm text-center">
         The page you're looking for doesn't exist or has been moved.
       </p>
-      <Button size="lg" className="gradient-bg border-0 shadow-lg shadow-primary/20 hover:opacity-90" onClick={() => navigate("/dashboard")}>
+      <Button size="lg" className="gradient-bg border-0 shadow-lg shadow-primary/20 hover:opacity-90" onClick={() => navigate("/home")}>
         Go to Dashboard
       </Button>
     </div>

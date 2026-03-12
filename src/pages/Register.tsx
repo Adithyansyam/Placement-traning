@@ -123,7 +123,7 @@ const Register = () => {
       
       setSuccess(true);
       toast.success("Account created successfully! ✓");
-      setTimeout(() => navigate("/dashboard"), 1500);
+      setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
       toast.error("Network error. Please check if the server is running.");
       setIsLoading(false);
