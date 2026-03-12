@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardNav from "@/components/DashboardNav";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
-import { ArrowRight, Sparkles, Trophy, Target, Zap, BookOpen, Brain, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Sparkles, Trophy, Target, Zap, BookOpen, Brain, TrendingUp } from "lucide-react";
 
 const QUOTES = [
   { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
@@ -51,8 +51,7 @@ const Home = () => {
     mouseY.set(((e.clientY - rect.top) / rect.height - 0.5) * 40);
   };
 
-  const prev = () => { setDirection(-1); setQuoteIdx((i) => (i - 1 + QUOTES.length) % QUOTES.length); };
-  const next = () => { setDirection(1); setQuoteIdx((i) => (i + 1) % QUOTES.length); };
+
 
   const q = QUOTES[quoteIdx];
 
@@ -81,20 +80,8 @@ const Home = () => {
 
         {/* Quote card */}
         <div className="relative w-full max-w-4xl mx-auto px-6">
-          {/* Nav arrows */}
-          <button onClick={prev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all"
-            style={{ background: "hsl(258 90% 62% / 0.15)", border: "1px solid hsl(258 90% 62% / 0.3)", color: "hsl(258 90% 80%)" }}>
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button onClick={next}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all"
-            style={{ background: "hsl(258 90% 62% / 0.15)", border: "1px solid hsl(258 90% 62% / 0.3)", color: "hsl(258 90% 80%)" }}>
-            <ChevronRight className="w-5 h-5" />
-          </button>
-
-          {/* Quote box */}
-          <div className="mx-14 rounded-3xl p-10 text-center relative overflow-hidden"
+        {/* Quote box */}
+        <div className="mx-0 rounded-3xl p-10 text-center relative overflow-hidden"
             style={{ background: "hsl(258 30% 10% / 0.8)", border: "1px solid hsl(258 90% 62% / 0.2)", backdropFilter: "blur(20px)" }}>
             {/* Decorative corner glow */}
             <div className="absolute top-0 left-0 w-40 h-40 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none"
@@ -102,8 +89,6 @@ const Home = () => {
             <div className="absolute bottom-0 right-0 w-40 h-40 rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none"
               style={{ background: "radial-gradient(circle, hsl(310 70% 60% / 0.2) 0%, transparent 70%)" }} />
 
-            {/* Open quote */}
-            <div className="text-9xl font-serif leading-none mb-0 select-none" style={{ color: "hsl(258 90% 62% / 0.3)", lineHeight: "0.6", marginBottom: "1rem" }}>"</div>
 
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div key={quoteIdx}
