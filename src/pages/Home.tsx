@@ -180,21 +180,6 @@ const Home = () => {
           </motion.button>
         </motion.div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-muted-foreground/50"
-        >
-          <div className="w-5 h-9 rounded-full border-2 border-current flex items-start justify-center p-1">
-            <motion.div
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity }}
-              className="w-1.5 h-1.5 rounded-full bg-current"
-            />
-          </div>
-          <span className="text-[10px] uppercase tracking-widest">scroll</span>
-        </motion.div>
       </section>
 
       {/* Stats Section */}
