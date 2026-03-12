@@ -138,21 +138,6 @@ const Home = () => {
           }}
         />
 
-        {/* Welcome badge */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8 inline-flex items-center gap-2 px-5 py-2 rounded-full glass-card border border-primary/30 text-primary text-sm font-semibold"
-        >
-          <motion.span
-            animate={{ rotate: [0, 15, -10, 15, 0] }}
-            transition={{ duration: 1.5, delay: 0.8, repeat: Infinity, repeatDelay: 3 }}
-          >
-            👋
-          </motion.span>
-          Welcome back, {displayName}! Let's crush it today.
-        </motion.div>
 
         {/* Motivational Quote — center of page */}
         <div className="max-w-4xl mx-auto mb-10 z-10 relative">
