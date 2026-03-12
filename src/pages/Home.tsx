@@ -72,7 +72,7 @@ const QuoteCycler = () => {
         transition={{ duration: 0.8, ease: "easeInOut" }}
         className="text-center"
       >
-        <p className="text-2xl md:text-4xl lg:text-5xl font-extrabold gradient-text leading-tight mb-4">
+        <p className="text-4xl md:text-6xl lg:text-7xl font-extrabold gradient-text leading-tight mb-6">
           "{QUOTES[index].text}"
         </p>
         <p className="text-muted-foreground text-base md:text-lg font-medium tracking-widest uppercase">
@@ -140,12 +140,12 @@ const Home = () => {
 
 
         {/* Motivational Quote — center of page */}
-        <div className="max-w-4xl mx-auto mb-10 z-10 relative">
+        <div className="max-w-4xl mx-auto mb-16 z-10 relative">
           <QuoteCycler />
         </div>
 
         {/* Quote indicator dots */}
-        <div className="flex gap-2 mb-10">
+        <div className="flex gap-2 mb-24">
           {QUOTES.map((_, i) => (
             <motion.div
               key={i}
