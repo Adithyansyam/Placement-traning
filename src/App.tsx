@@ -15,6 +15,7 @@ import CodingChallenges from "./pages/CodingChallenges";
 import MockTests from "./pages/MockTests";
 import Progress from "./pages/Progress";
 import SkillGap from "./pages/SkillGap";
+import AIPage from "./pages/AI";
 import StudentProfile from "./pages/StudentProfile";
 import AdminDashboard from "./pages/AdminDashboard";
 import PlacementDashboard from "./pages/PlacementDashboard";
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/mock-tests" element={<P roles={["student"]}><MockTests /></P>} />
             <Route path="/progress" element={<P roles={["student"]}><Progress /></P>} />
             <Route path="/skill-gap" element={<P roles={["student"]}><SkillGap /></P>} />
+            <Route path="/ai" element={<P roles={["student"]}><AIPage /></P>} />
             <Route path="/profile" element={<P roles={["student"]}><StudentProfile /></P>} />
 
             {/* Admin routes */}

@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "Company Prep", to: "/company-prep" },
   { label: "Progress", to: "/progress" },
   { label: "Skill Gap", to: "/skill-gap" },
+  { label: "AI", to: "/ai" },
 ];
 
 const DashboardNav = () => {
