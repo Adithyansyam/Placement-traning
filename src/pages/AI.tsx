@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import DashboardNav from "@/components/DashboardNav";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,20 @@ import {
   ArrowRight,
   Star,
 } from "lucide-react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const GEMINI_API_KEY = "AIzaSyACErJxeFcfa-cwvTgmFEdts4misx90fcM";
+
+const SYSTEM_PROMPT = `You are PlacePrep AI, an expert placement and interview preparation assistant. 
+Help students with:
+- Technical interview preparation (DSA, System Design, LLD)
+- HR and behavioral interview questions
+- Resume tips and feedback
+- Company-specific advice (Amazon, Google, TCS, Infosys, etc.)
+- Coding challenges
+- Study planning and roadmaps
+
+Be concise, friendly, motivating, and practical. Format responses clearly using bullet points or numbered lists where helpful. Keep answers focused and actionable.`;
 
 const AI_FEATURES = [
   {
@@ -25,16 +39,16 @@ const AI_FEATURES = [
     badge: "Popular",
     badgeColor: "bg-violet-500",
     gradient: "from-violet-500/20 to-purple-500/10",
-    action: "Start Practice",
+    prompt: "Give me a mock technical interview question for a software engineer role at Amazon.",
   },
   {
     icon: FileText,
     title: "Resume Analyzer",
-    desc: "Upload your resume and get instant AI-powered feedback tailored to your target companies.",
+    desc: "Get AI-powered resume tips tailored to your target companies.",
     badge: "New",
     badgeColor: "bg-emerald-500",
     gradient: "from-emerald-500/20 to-teal-500/10",
-    action: "Analyze Resume",
+    prompt: "What are the top 5 things I should include in my resume to get shortlisted at top product companies?",
   },
   {
     icon: Zap,
@@ -43,56 +57,72 @@ const AI_FEATURES = [
     badge: "Beta",
     badgeColor: "bg-amber-500",
     gradient: "from-amber-500/20 to-orange-500/10",
-    action: "Generate Plan",
+    prompt: "Create a 4-week placement preparation study plan for a student targeting Amazon/Google.",
   },
   {
     icon: Star,
     title: "Answer Evaluator",
-    desc: "Paste any interview answer and receive a detailed AI score with actionable suggestions.",
+    desc: "Get detailed AI feedback and scores on your interview answers.",
     badge: null,
     badgeColor: "",
     gradient: "from-blue-500/20 to-cyan-500/10",
-    action: "Evaluate Answer",
+    prompt: "How do I answer the question 'Tell me about yourself' in a placement interview? Give me a sample answer and tips.",
   },
 ];
 
 const QUICK_PROMPTS = [
   "How do I answer 'Tell me about yourself'?",
   "Explain system design in simple terms",
-  "Mock DSA interview question",
+  "Give me a DSA interview question",
   "Tips for Amazon Leadership Principles",
 ];
 
-const SAMPLE_RESPONSES: Record<string, string> = {
-  "How do I answer 'Tell me about yourself'?":
-    "Start with a brief professional intro (your degree & college), mention 1-2 key technical skills or projects, then tie it to why you're excited about this company. Keep it under 90 seconds and end with a forward-looking statement.",
-  "Explain system design in simple terms":
-    "System design is about planning how to build large-scale software. You decide on components (servers, databases, caches), how they communicate, and how to handle millions of users. Key pillars: scalability, reliability, and maintainability.",
-  "Mock DSA interview question":
-    "Here's one: Given an array of integers, find the two numbers that add up to a target sum. Return their indices.\n\nHint: Use a hash map to store complements. Time: O(n), Space: O(n). Try coding it out!",
-  "Tips for Amazon Leadership Principles":
-    "Use the STAR method (Situation, Task, Action, Result). Amazon values ownership, customer obsession, and bias for action. Prepare 2-3 stories per principle. Quantify your results (e.g., 'reduced latency by 30%').",
-};
+type Message = { role: "user" | "ai"; text: string };
 
-const DEFAULT_RESPONSE =
-  "Great question! I'm here to help you ace your placement journey. I can assist with interview prep, resume tips, DSA concepts, system design, HR questions, and more. Just ask!";
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const AIPage = () => {
   const [message, setMessage] = useState("");
-  const [chat, setChat] = useState<{ role: "user" | "ai"; text: string }[]>([]);
+  const [chat, setChat] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  // Maintain Gemini chat session
+  const chatSessionRef = useRef<ReturnType<typeof genAI.getGenerativeModel> extends infer M
+    ? M extends { startChat: (...args: any[]) => infer C } ? C : never : never>(null as any);
 
-  const sendMessage = (text?: string) => {
+  // Initialize chat session once
+  useEffect(() => {
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash",
+      systemInstruction: SYSTEM_PROMPT,
+    });
+    chatSessionRef.current = model.startChat({ history: [] });
+  }, []);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chat, loading]);
+
+  const sendMessage = async (text?: string) => {
     const msg = (text ?? message).trim();
-    if (!msg) return;
-    setChat((prev) => [...prev, { role: "user", text: msg }]);
+    if (!msg || loading) return;
     setMessage("");
+    setChat((prev) => [...prev, { role: "user", text: msg }]);
     setLoading(true);
-    setTimeout(() => {
-      const reply = SAMPLE_RESPONSES[msg] ?? DEFAULT_RESPONSE;
+
+    try {
+      const result = await chatSessionRef.current.sendMessage(msg);
+      const reply = result.response.text();
       setChat((prev) => [...prev, { role: "ai", text: reply }]);
+    } catch (err) {
+      setChat((prev) => [
+        ...prev,
+        { role: "ai", text: "Sorry, I couldn't get a response. Please check your connection and try again." },
+      ]);
+    } finally {
       setLoading(false);
-    }, 900);
+    }
   };
 
   return (
@@ -109,14 +139,14 @@ const AIPage = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-5">
             <Sparkles className="w-4 h-4" />
-            Powered by AI
+            Powered by Gemini AI
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4 leading-tight">
             Your Personal{" "}
             <span className="gradient-text">AI Placement</span> Assistant
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Supercharge your interview prep with AI-driven coaching, resume
+            Supercharge your interview prep with Gemini-powered coaching, resume
             analysis, and smart study planning — all in one place.
           </p>
         </motion.div>
@@ -148,8 +178,14 @@ const AIPage = () => {
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground mb-5 flex-1 leading-relaxed">{f.desc}</p>
-                  <Button size="sm" variant="outline" className="w-full gap-1 group-hover:border-primary/50 group-hover:text-primary transition-colors">
-                    {f.action} <ArrowRight className="w-3.5 h-3.5" />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full gap-1 group-hover:border-primary/50 group-hover:text-primary transition-colors"
+                    onClick={() => sendMessage(f.prompt)}
+                    disabled={loading}
+                  >
+                    Try it <ArrowRight className="w-3.5 h-3.5" />
                   </Button>
                 </CardContent>
               </Card>
@@ -168,20 +204,21 @@ const AIPage = () => {
               <Bot className="w-4 h-4 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">AI Chat Assistant</h2>
-              <p className="text-xs text-muted-foreground">Ask anything about placements, interviews, or coding</p>
+              <h2 className="text-lg font-bold text-foreground">Gemini AI Chat</h2>
+              <p className="text-xs text-muted-foreground">Powered by Google Gemini · Ask anything about placements</p>
             </div>
-            <Badge className="ml-auto bg-emerald-500/15 text-emerald-600 border-emerald-500/30">● Online</Badge>
+            <Badge className="ml-auto bg-emerald-500/15 text-emerald-600 border-emerald-500/30">● Live</Badge>
           </div>
 
           <Card className="mb-3">
             <CardContent className="p-0">
               {/* Chat Messages */}
-              <div className="h-72 overflow-y-auto p-5 space-y-4 flex flex-col">
+              <div className="h-80 overflow-y-auto p-5 space-y-4 flex flex-col">
                 {chat.length === 0 && (
                   <div className="flex-1 flex flex-col items-center justify-center text-center text-muted-foreground gap-2">
                     <MessageSquare className="w-10 h-10 opacity-20" />
-                    <p className="text-sm">Ask the AI anything about your placement journey!</p>
+                    <p className="text-sm font-medium">Ask me anything about your placement journey!</p>
+                    <p className="text-xs opacity-60">Interview tips, DSA, system design, HR questions…</p>
                   </div>
                 )}
                 <AnimatePresence>
@@ -231,6 +268,7 @@ const AIPage = () => {
                     </div>
                   </motion.div>
                 )}
+                <div ref={chatEndRef} />
               </div>
 
               {/* Input */}
@@ -238,9 +276,10 @@ const AIPage = () => {
                 <Input
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMessage()}
                   placeholder="Ask the AI assistant…"
                   className="flex-1"
+                  disabled={loading}
                 />
                 <Button onClick={() => sendMessage()} disabled={!message.trim() || loading} className="gap-1.5 px-4">
                   <SendHorizonal className="w-4 h-4" />
@@ -257,7 +296,8 @@ const AIPage = () => {
               <button
                 key={p}
                 onClick={() => sendMessage(p)}
-                className="text-xs px-3 py-1.5 rounded-full border border-border hover:border-primary/50 hover:text-primary hover:bg-primary/5 text-muted-foreground transition-all duration-200"
+                disabled={loading}
+                className="text-xs px-3 py-1.5 rounded-full border border-border hover:border-primary/50 hover:text-primary hover:bg-primary/5 text-muted-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {p}
               </button>
