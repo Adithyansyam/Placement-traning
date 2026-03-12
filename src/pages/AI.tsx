@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const GEMINI_API_KEY = "AIzaSyACErJxeFcfa-cwvTgmFEdts4misx90fcM";
+const GEMINI_API_KEY = "AIzaSyCTnJnlpyeRL5v1sILldEhrjcs3UjSUArE";
 
 const SYSTEM_PROMPT = `You are PlacePrep AI, an expert placement and interview preparation assistant. 
 Help students with:
@@ -81,22 +81,28 @@ type Message = { role: "user" | "ai"; text: string };
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
+const getModel = () =>
+  genAI.getGenerativeModel({
+    model: "gemini-2.0-flash-lite",
+    systemInstruction: SYSTEM_PROMPT,
+  });
+
 const AIPage = () => {
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   // Maintain Gemini chat session
-  const chatSessionRef = useRef<ReturnType<typeof genAI.getGenerativeModel> extends infer M
-    ? M extends { startChat: (...args: any[]) => infer C } ? C : never : never>(null as any);
+  const chatSessionRef = useRef<any>(null);
+  const historyRef = useRef<{ role: string; parts: { text: string }[] }[]>([]);
 
-  // Initialize chat session once
+  // Initialize chat session
+  const initSession = () => {
+    chatSessionRef.current = getModel().startChat({ history: historyRef.current });
+  };
+
   useEffect(() => {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
-      systemInstruction: SYSTEM_PROMPT,
-    });
-    chatSessionRef.current = model.startChat({ history: [] });
+    initSession();
   }, []);
 
   // Auto-scroll to bottom
@@ -111,15 +117,32 @@ const AIPage = () => {
     setChat((prev) => [...prev, { role: "user", text: msg }]);
     setLoading(true);
 
+    // Ensure session is alive
+    if (!chatSessionRef.current) initSession();
+
     try {
       const result = await chatSessionRef.current.sendMessage(msg);
       const reply = result.response.text();
+      // Track history for session continuity
+      historyRef.current = [
+        ...historyRef.current,
+        { role: "user", parts: [{ text: msg }] },
+        { role: "model", parts: [{ text: reply }] },
+      ];
       setChat((prev) => [...prev, { role: "ai", text: reply }]);
-    } catch (err) {
-      setChat((prev) => [
-        ...prev,
-        { role: "ai", text: "Sorry, I couldn't get a response. Please check your connection and try again." },
-      ]);
+    } catch (err: any) {
+      console.error("Gemini API error:", err);
+      const errStr = String(err?.message ?? err ?? "");
+      const is429 = err?.status === 429 || errStr.includes("429");
+      const is403 = err?.status === 403 || errStr.includes("403") || errStr.includes("API_KEY");
+      const errMsg = is429
+        ? "⚠️ Rate limit reached — please wait 10–15 seconds and try again."
+        : is403
+        ? "❌ API key error — the Gemini key may be invalid or not enabled. Check the console for details."
+        : `❌ Error: ${errStr || "Unknown error. Open browser console (F12) for details."}`;
+      // Reinitialize session in case it got corrupted
+      initSession();
+      setChat((prev) => [...prev, { role: "ai", text: errMsg }]);
     } finally {
       setLoading(false);
     }
