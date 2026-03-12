@@ -5,16 +5,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAuth, type UserRole } from "@/contexts/AuthContext";
+import { getApiUrl } from "@/lib/api";
 
-type Role = "Student" | "Admin" | "Placement Cell";
-const ROLE_MAP: Record<Role, UserRole> = { Student: "student", Admin: "admin", "Placement Cell": "placement" };
 const REDIRECT_MAP: Record<UserRole, string> = { student: "/dashboard", admin: "/admin", placement: "/placement" };
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>("Student");
+
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
@@ -35,15 +34,36 @@ const Login = () => {
     e.preventDefault();
     if (!validate()) return;
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setIsLoading(false);
-    const mappedRole = ROLE_MAP[role];
-    login(mappedRole);
-    toast.success("Welcome back! ✓");
-    navigate(REDIRECT_MAP[mappedRole]);
+
+    try {
+      const response = await fetch(`${getApiUrl()}/api/users/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.error || "Login failed");
+        setIsLoading(false);
+        return;
+      }
+
+      // Store token and login user
+      localStorage.setItem("pp_token", data.token);
+      localStorage.setItem("pp_userId", data.user.id);
+      login("student", { name: data.user.name, email: data.user.email });
+      
+      toast.success("Welcome back! ✓");
+      navigate(REDIRECT_MAP["student"]);
+    } catch (err) {
+      toast.error("Network error. Please check if the server is running.");
+      setIsLoading(false);
+    }
   };
 
-  const roles: Role[] = ["Student", "Admin", "Placement Cell"];
+
 
   return (
     <div className="min-h-screen flex">
@@ -98,23 +118,7 @@ const Login = () => {
             <h2 className="text-2xl font-extrabold text-foreground mb-1">Sign In</h2>
             <p className="text-sm text-muted-foreground mb-6">Enter your credentials to continue</p>
 
-            {/* Role Selector */}
-            <div className="flex bg-muted/60 rounded-xl p-1 mb-6 backdrop-blur-sm">
-              {roles.map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setRole(r)}
-                  className={`flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 ${
-                    role === r
-                      ? "gradient-bg text-primary-foreground shadow-lg shadow-primary/20"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
+
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import {
   ClipboardCheck, Target, Flame, Gauge, ArrowRight, Calendar,
   BookOpen, Code2, TrendingUp, Sparkles
@@ -10,26 +11,19 @@ import {
 } from "recharts";
 import DashboardNav from "@/components/DashboardNav";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { getApiUrl } from "@/lib/api";
 
-const scoreData = [
-  { test: "Test 1", score: 58 }, { test: "Test 2", score: 65 },
-  { test: "Test 3", score: 62 }, { test: "Test 4", score: 74 },
-  { test: "Test 5", score: 70 }, { test: "Test 6", score: 78 },
-  { test: "Test 7", score: 72 }, { test: "Test 8", score: 82 },
-];
-
-const stats = [
-  { icon: ClipboardCheck, label: "Tests Taken", value: "14", color: "from-primary to-primary/70" },
-  { icon: Target, label: "Average Score", value: "72%", color: "from-purple-500 to-pink-500" },
-  { icon: Flame, label: "Study Streak", value: "5 days 🔥", color: "from-orange-500 to-red-500" },
-  { icon: Gauge, label: "Readiness Score", value: "68%", color: "from-emerald-500 to-teal-500" },
-];
-
-const upcomingTests = [
-  { name: "TCS NQT Mock", type: "Aptitude", date: "Mar 14, 2026" },
-  { name: "DSA Challenge #5", type: "Coding", date: "Mar 16, 2026" },
-  { name: "Infosys SP Mock", type: "Full Test", date: "Mar 18, 2026" },
-];
+const iconMap: Record<string, any> = {
+  ClipboardCheck,
+  Target,
+  Flame,
+  Gauge,
+  BookOpen,
+  Code2,
+  TrendingUp,
+  Sparkles,
+};
 
 const quickActions = [
   { icon: BookOpen, label: "Study Materials", path: "/study-materials", gradient: "from-primary to-indigo-400" },
@@ -49,6 +43,106 @@ const item = {
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const userName = user?.name?.split(" ")[0] || "Student";
+  
+  const [stats, setStats] = useState([
+    { label: "Tests Taken", value: "24", icon: "ClipboardCheck", color: "from-blue-500 to-cyan-400" },
+    { label: "Avg Score", value: "78%", icon: "Target", color: "from-emerald-500 to-teal-400" },
+    { label: "Streak", value: "12 days", icon: "Flame", color: "from-orange-500 to-red-400" },
+    { label: "Readiness", value: "85%", icon: "Gauge", color: "from-purple-500 to-pink-400" }
+  ]);
+  const [scoreData, setScoreData] = useState([
+    { test: "Mock Test 1", score: 65 },
+    { test: "Mock Test 2", score: 72 },
+    { test: "Mock Test 3", score: 78 },
+    { test: "Mock Test 4", score: 82 },
+    { test: "Mock Test 5", score: 75 },
+    { test: "Mock Test 6", score: 88 },
+    { test: "Mock Test 7", score: 91 },
+    { test: "Mock Test 8", score: 85 }
+  ]);
+  const [upcomingTests, setUpcomingTests] = useState([
+    { name: "Quantitative Aptitude Mock Test", type: "Aptitude", date: "Tomorrow, 2:00 PM" },
+    { name: "Data Structures Assessment", type: "Technical", date: "Mar 13, 4:00 PM" },
+    { name: "Logical Reasoning Mock Test", type: "Aptitude", date: "Mar 15, 11:00 AM" },
+    { name: "Verbal Ability Mock Test", type: "Verbal", date: "Mar 17, 3:00 PM" }
+  ]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const token = localStorage.getItem("pp_token");
+        if (!user?.id) return;
+        
+        const response = await fetch(`${getApiUrl()}/api/users/dashboard/student/${user.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data.stats);
+          setScoreData(data.scoreData);
+          setUpcomingTests(data.upcomingTests);
+        } else {
+          // Fallback to mock data if API fails
+          setStats([
+            { label: "Tests Taken", value: "24", icon: "ClipboardCheck", color: "from-blue-500 to-cyan-400" },
+            { label: "Avg Score", value: "78%", icon: "Target", color: "from-emerald-500 to-teal-400" },
+            { label: "Streak", value: "12 days", icon: "Flame", color: "from-orange-500 to-red-400" },
+            { label: "Readiness", value: "85%", icon: "Gauge", color: "from-purple-500 to-pink-400" }
+          ]);
+          setScoreData([
+            { test: "Test 1", score: 65 },
+            { test: "Test 2", score: 72 },
+            { test: "Test 3", score: 78 },
+            { test: "Test 4", score: 82 },
+            { test: "Test 5", score: 75 },
+            { test: "Test 6", score: 88 },
+            { test: "Test 7", score: 91 },
+            { test: "Test 8", score: 85 }
+          ]);
+          setUpcomingTests([
+            { name: "Quantitative Aptitude Test", type: "Aptitude", date: "Tomorrow, 2:00 PM" },
+            { name: "Data Structures Assessment", type: "Technical", date: "Mar 13, 4:00 PM" },
+            { name: "Logical Reasoning Quiz", type: "Aptitude", date: "Mar 15, 11:00 AM" },
+            { name: "Verbal Ability Test", type: "Verbal", date: "Mar 17, 3:00 PM" }
+          ]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+        // Fallback to mock data on error
+        setStats([
+          { label: "Tests Taken", value: "24", icon: "ClipboardCheck", color: "from-blue-500 to-cyan-400" },
+          { label: "Avg Score", value: "78%", icon: "Target", color: "from-emerald-500 to-teal-400" },
+          { label: "Streak", value: "12 days", icon: "Flame", color: "from-orange-500 to-red-400" },
+          { label: "Readiness", value: "85%", icon: "Gauge", color: "from-purple-500 to-pink-400" }
+        ]);
+        setScoreData([
+          { test: "Test 1", score: 65 },
+          { test: "Test 2", score: 72 },
+          { test: "Test 3", score: 78 },
+          { test: "Test 4", score: 82 },
+          { test: "Test 5", score: 75 },
+          { test: "Test 6", score: 88 },
+          { test: "Test 7", score: 91 },
+          { test: "Test 8", score: 85 }
+        ]);
+        setUpcomingTests([
+          { name: "Quantitative Aptitude Test", type: "Aptitude", date: "Tomorrow, 2:00 PM" },
+          { name: "Data Structures Assessment", type: "Technical", date: "Mar 13, 4:00 PM" },
+          { name: "Logical Reasoning Quiz", type: "Aptitude", date: "Mar 15, 11:00 AM" },
+          { name: "Verbal Ability Test", type: "Verbal", date: "Mar 17, 3:00 PM" }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, [user]);
+
   return (
     <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
@@ -87,7 +181,7 @@ const StudentDashboard = () => {
                 transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
                 className="text-3xl font-extrabold tracking-tight"
               >
-                Good morning, Rahul 👋
+                Good morning, {userName} 👋
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, x: -20 }}
@@ -102,36 +196,39 @@ const StudentDashboard = () => {
 
           {/* Stats Row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {stats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                variants={item}
-                whileHover={{ y: -4, scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                className="glass-card rounded-2xl p-5 border border-border/30 cursor-default group"
-              >
-                <div className="flex items-center gap-3.5">
-                  <motion.div
-                    whileHover={{ rotate: [0, -10, 10, 0] }}
-                    transition={{ duration: 0.4 }}
-                    className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg shadow-primary/10`}
-                  >
-                    <stat.icon className="w-5 h-5 text-white" />
-                  </motion.div>
-                  <div>
+            {stats.map((stat, i) => {
+              const IconComponent = iconMap[stat.icon] || ClipboardCheck;
+              return (
+                <motion.div
+                  key={stat.label}
+                  variants={item}
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  className="glass-card rounded-2xl p-5 border border-border/30 cursor-default group"
+                >
+                  <div className="flex items-center gap-3.5">
                     <motion.div
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}
-                      className="text-2xl font-extrabold text-foreground"
+                      whileHover={{ rotate: [0, -10, 10, 0] }}
+                      transition={{ duration: 0.4 }}
+                      className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg shadow-primary/10`}
                     >
-                      {stat.value}
+                      <IconComponent className="w-5 h-5 text-white" />
                     </motion.div>
-                    <div className="text-xs text-muted-foreground font-medium">{stat.label}</div>
+                    <div>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}
+                        className="text-2xl font-extrabold text-foreground"
+                      >
+                        {stat.value}
+                      </motion.div>
+                      <div className="text-xs text-muted-foreground font-medium">{stat.label}</div>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
 
           {/* Quick Actions */}
@@ -206,31 +303,39 @@ const StudentDashboard = () => {
                 <span className="text-xs text-primary font-semibold cursor-pointer hover:underline" onClick={() => navigate("/mock-tests")}>View all</span>
               </div>
               <div className="space-y-3">
-                {upcomingTests.map((test, i) => (
-                  <motion.div
-                    key={test.name}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + i * 0.1, type: "spring", stiffness: 300, damping: 24 }}
-                    whileHover={{ x: 4 }}
-                    className="p-4 rounded-xl bg-secondary/50 backdrop-blur-sm border border-border/20 flex items-center justify-between gap-3 group"
-                  >
-                    <div className="min-w-0">
-                      <div className="font-bold text-sm text-foreground truncate">{test.name}</div>
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">{test.type}</span>
-                        <span className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3" /> {test.date}</span>
-                      </div>
-                    </div>
-                    <Button
-                      size="sm"
-                      className="shrink-0 text-xs font-semibold h-8 px-3 gap-1 rounded-lg gradient-bg border-0 hover:opacity-90 shadow-md shadow-primary/20"
-                      onClick={() => navigate("/mock-tests")}
+                {upcomingTests.length > 0 ? (
+                  upcomingTests.map((test, i) => (
+                    <motion.div
+                      key={test.name}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + i * 0.1, type: "spring", stiffness: 300, damping: 24 }}
+                      whileHover={{ x: 4 }}
+                      className="p-4 rounded-xl bg-secondary/50 backdrop-blur-sm border border-border/20 flex items-center justify-between gap-3 group"
                     >
-                      Attempt <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                    </Button>
-                  </motion.div>
-                ))}
+                      <div className="min-w-0">
+                        <div className="font-bold text-sm text-foreground truncate">{test.name}</div>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">{test.type}</span>
+                          <span className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3" /> {test.date}</span>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        className="shrink-0 text-xs font-semibold h-8 px-3 gap-1 rounded-lg gradient-bg border-0 hover:opacity-90 shadow-md shadow-primary/20"
+                        onClick={() => navigate("/mock-tests")}
+                      >
+                        Attempt <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                      </Button>
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Calendar className="w-10 h-10 mx-auto mb-3 opacity-40" />
+                    <p className="font-medium">No upcoming tests</p>
+                    <p className="text-sm mt-1">Check back later for new mock tests</p>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>

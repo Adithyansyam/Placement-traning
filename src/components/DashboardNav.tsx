@@ -15,9 +15,13 @@ const NAV_LINKS = [
 
 const DashboardNav = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Generate initials from user name
+  const initials = user?.name ? user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase() : "R";
+  const displayName = user?.name ? user.name.split(" ")[0] : "Rahul";
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -69,9 +73,9 @@ const DashboardNav = () => {
               className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-muted/60 transition-all duration-200"
             >
               <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-primary-foreground font-bold text-xs">
-                R
+                {initials}
               </div>
-              <span className="text-sm font-medium text-foreground hidden sm:block">Rahul</span>
+              <span className="text-sm font-medium text-foreground hidden sm:block">{displayName}</span>
               <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
 

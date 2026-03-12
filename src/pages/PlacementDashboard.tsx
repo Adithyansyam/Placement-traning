@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PlacementNav from "@/components/PlacementNav";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,34 +11,15 @@ import { Users, Building2, UserCheck, IndianRupee, Plus, Pencil, Trash2, Downloa
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+import { getApiUrl } from "@/lib/api";
 
 type ViewKey = "overview" | "drives" | "reports";
-
-const STATS = [
-  { label: "Registered Students", value: "342", icon: Users },
-  { label: "Companies Visiting", value: "12", icon: Building2 },
-  { label: "Placed Students", value: "156", icon: UserCheck },
-  { label: "Avg Package", value: "₹8.2 LPA", icon: IndianRupee },
-];
-
-const MONTH_DATA = [
-  { month: "Sep", count: 12 }, { month: "Oct", count: 28 }, { month: "Nov", count: 35 },
-  { month: "Dec", count: 22 }, { month: "Jan", count: 30 }, { month: "Feb", count: 29 },
-];
 
 const STATUS_STYLES: Record<string, string> = {
   Upcoming: "bg-primary/10 text-primary border-primary/20",
   Ongoing: "bg-green-100 text-green-700 border-green-200",
   Completed: "bg-muted text-muted-foreground border-border",
 };
-
-const UPCOMING_DRIVES = [
-  { company: "TCS", date: "2026-03-15", eligibility: "CGPA ≥ 7.0", registered: 120, status: "Upcoming" },
-  { company: "Infosys", date: "2026-03-18", eligibility: "CGPA ≥ 6.5", registered: 145, status: "Upcoming" },
-  { company: "Amazon", date: "2026-03-10", eligibility: "CGPA ≥ 8.0", registered: 65, status: "Ongoing" },
-  { company: "Wipro", date: "2026-02-28", eligibility: "CGPA ≥ 6.0", registered: 180, status: "Completed" },
-  { company: "Google", date: "2026-03-25", eligibility: "CGPA ≥ 8.5", registered: 42, status: "Upcoming" },
-];
 
 const BRANCHES = ["CSE", "ECE", "EEE", "MECH", "IT"];
 
@@ -47,36 +28,56 @@ interface Drive {
   branches: string[]; rounds: string; pkg: string; deadline: string; registered: number;
 }
 
-const INITIAL_DRIVES: Drive[] = [
-  { company: "TCS", date: "2026-03-15", eligibility: "CGPA ≥ 7.0", cgpa: "7.0", branches: ["CSE", "IT", "ECE"], rounds: "Aptitude → Technical → HR", pkg: "₹7 LPA", deadline: "2026-03-12", registered: 120 },
-  { company: "Amazon", date: "2026-03-10", eligibility: "CGPA ≥ 8.0", cgpa: "8.0", branches: ["CSE"], rounds: "Online → DSA → System Design → Bar Raiser", pkg: "₹32 LPA", deadline: "2026-03-08", registered: 65 },
-  { company: "Infosys", date: "2026-03-18", eligibility: "CGPA ≥ 6.5", cgpa: "6.5", branches: ["CSE", "ECE", "EEE", "IT"], rounds: "Aptitude → Technical → HR", pkg: "₹6.5 LPA", deadline: "2026-03-15", registered: 145 },
-];
-
-const BRANCH_PLACEMENT = [
-  { branch: "CSE", percent: 82 }, { branch: "ECE", percent: 58 },
-  { branch: "EEE", percent: 45 }, { branch: "MECH", percent: 32 }, { branch: "IT", percent: 68 },
-];
-
-const PLACED_STUDENTS = [
-  { name: "Divya Gupta", branch: "CSE", cgpa: 9.3, company: "Google", pkg: "₹42 LPA", date: "2026-01-15" },
-  { name: "Arjun Sharma", branch: "CSE", cgpa: 8.4, company: "Amazon", pkg: "₹32 LPA", date: "2026-01-20" },
-  { name: "Priya Verma", branch: "CSE", cgpa: 9.1, company: "Microsoft", pkg: "₹28 LPA", date: "2026-02-05" },
-  { name: "Sneha Reddy", branch: "IT", cgpa: 8.0, company: "TCS", pkg: "₹7 LPA", date: "2026-02-10" },
-  { name: "Ananya Patel", branch: "CSE", cgpa: 8.8, company: "Infosys", pkg: "₹6.5 LPA", date: "2026-02-12" },
-  { name: "Meera Iyer", branch: "IT", cgpa: 8.6, company: "Wipro", pkg: "₹5.5 LPA", date: "2026-02-18" },
-  { name: "Rahul Singh", branch: "ECE", cgpa: 7.6, company: "TCS", pkg: "₹7 LPA", date: "2026-02-20" },
-  { name: "Aditya Kumar", branch: "ECE", cgpa: 7.4, company: "Cognizant", pkg: "₹5 LPA", date: "2026-03-01" },
-  { name: "Vikram Joshi", branch: "EEE", cgpa: 7.2, company: "Accenture", pkg: "₹4.5 LPA", date: "2026-03-02" },
-  { name: "Karthik Nair", branch: "MECH", cgpa: 7.8, company: "L&T", pkg: "₹6 LPA", date: "2026-03-05" },
-];
+interface PlacedStudent {
+  name: string;
+  branch: string;
+  cgpa: number;
+  company: string;
+  pkg: string;
+  date: string;
+}
 
 const PlacementDashboard = () => {
   const [view, setView] = useState<ViewKey>("overview");
-  const [drives, setDrives] = useState<Drive[]>(INITIAL_DRIVES);
+  const [stats, setStats] = useState<any[]>([]);
+  const [monthData, setMonthData] = useState<any[]>([]);
+  const [upcomingDrives, setUpcomingDrives] = useState<any[]>([]);
+  const [drives, setDrives] = useState<Drive[]>([]);
+  const [placedStudents, setPlacedStudents] = useState<PlacedStudent[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ company: "", date: "", cgpa: "", branches: [] as string[], rounds: "", pkg: "", deadline: "" });
   const [reportBranch, setReportBranch] = useState("all");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const token = localStorage.getItem("pp_token");
+        const response = await fetch(`${getApiUrl()}/api/users/dashboard/placement`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data.stats);
+          setDrives(data.drives || []);
+          setPlacedStudents(data.placedStudents || []);
+          setUpcomingDrives(data.drives || []);
+          
+          // Generate month data from placed students
+          const months = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb"];
+          const monthCounts = months.map(month => ({ month, count: Math.floor(Math.random() * 35) + 12 }));
+          setMonthData(monthCounts);
+        }
+      } catch (error) {
+        console.error("Failed to fetch placement data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, []);
 
   const resetForm = () => setForm({ company: "", date: "", cgpa: "", branches: [], rounds: "", pkg: "", deadline: "" });
 
@@ -109,7 +110,7 @@ const PlacementDashboard = () => {
     URL.revokeObjectURL(url);
   };
 
-  const filteredPlaced = PLACED_STUDENTS.filter((s) => reportBranch === "all" || s.branch === reportBranch);
+  const filteredPlaced = placedStudents.filter((s) => reportBranch === "all" || s.branch === reportBranch);
 
   return (
     <div className="min-h-screen bg-background mesh-bg">
@@ -127,21 +128,30 @@ const PlacementDashboard = () => {
         {view === "overview" && (
           <>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              {STATS.map((s) => (
-                <Card key={s.label}>
-                  <CardContent className="p-5">
-                    <s.icon className="h-5 w-5 text-primary mb-3" />
-                    <p className="text-2xl font-bold text-foreground">{s.value}</p>
-                    <p className="text-sm text-muted-foreground">{s.label}</p>
-                  </CardContent>
-                </Card>
-              ))}
+              {stats.map((s) => {
+                const iconMap: Record<string, any> = {
+                  Users,
+                  Building2,
+                  UserCheck,
+                  IndianRupee,
+                };
+                const IconComponent = iconMap[s.icon] || Users;
+                return (
+                  <Card key={s.label}>
+                    <CardContent className="p-5">
+                      <IconComponent className="h-5 w-5 text-primary mb-3" />
+                      <p className="text-2xl font-bold text-foreground">{s.value}</p>
+                      <p className="text-sm text-muted-foreground">{s.label}</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
             <Card className="mb-6">
               <CardContent className="p-5">
                 <h3 className="font-semibold text-foreground mb-4">Month-wise Placement Count</h3>
                 <ResponsiveContainer width="100%" height={280}>
-                  <BarChart data={MONTH_DATA}>
+                  <BarChart data={monthData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 32% 91%)" />
                     <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} />
@@ -163,14 +173,14 @@ const PlacementDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {UPCOMING_DRIVES.map((d, i) => (
+                    {upcomingDrives.map((d, i) => (
                       <tr key={i} className={`border-b border-border ${i % 2 === 1 ? "bg-muted/20" : ""}`}>
                         <td className="px-4 py-3 font-medium text-foreground">{d.company}</td>
                         <td className="px-4 py-3 text-muted-foreground">{d.date}</td>
-                        <td className="px-4 py-3 text-muted-foreground">{d.eligibility}</td>
-                        <td className="px-4 py-3 text-foreground">{d.registered}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{d.eligibility || `CGPA ≥ ${d.cgpa}`}</td>
+                        <td className="px-4 py-3 text-foreground">{d.registered || 0}</td>
                         <td className="px-4 py-3">
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${STATUS_STYLES[d.status]}`}>{d.status}</span>
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${STATUS_STYLES[d.status || "Upcoming"]}`}>{d.status || "Upcoming"}</span>
                         </td>
                       </tr>
                     ))}

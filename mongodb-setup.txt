@@ -1,0 +1,13 @@
+# MongoDB Atlas Connection Setup Instructions
+
+1. Create a file named `.env` in your project root folder
+2. Add the following content to the .env file:
+
+MONGODB_URI=mongodb+srv://nandanaktr2005_db_user:<db_password>@cluster0.6lpfzf7.mongodb.net/?appName=Cluster0
+DB_NAME=placement_training
+
+3. Replace <db_password> with your actual database password
+4. Make sure there are no spaces around the = signs
+5. Save the file
+
+Your application will now connect to MongoDB Atlas when you run it.

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminNav from "@/components/AdminNav";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,28 +11,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
-
-const STATS = [
-  { label: "Total Students", value: "342", icon: Users },
-  { label: "Tests Published", value: "18", icon: ClipboardList },
-  { label: "Materials Uploaded", value: "56", icon: FileText },
-  { label: "Avg Readiness Score", value: "64%", icon: TrendingUp },
-];
-
-const BRANCH_DATA = [
-  { branch: "CSE", score: 72 },
-  { branch: "ECE", score: 58 },
-  { branch: "EEE", score: 52 },
-  { branch: "MECH", score: 45 },
-  { branch: "IT", score: 66 },
-];
-
-const PERF_DATA = [
-  { name: "Excellent", value: 45 },
-  { name: "Good", value: 120 },
-  { name: "Average", value: 110 },
-  { name: "Below Average", value: 67 },
-];
+import { getApiUrl } from "@/lib/api";
 
 const PIE_COLORS = [
   "hsl(258 90% 52%)",
@@ -50,29 +29,52 @@ const ACTIVITY = [
   { time: "Yesterday", text: "Mock Test 2 results published" },
 ];
 
-const STUDENTS = [
-  { name: "Arjun Sharma", roll: "21CS3045", branch: "CSE", cgpa: 8.4, tests: 12, avg: 78, readiness: 72 },
-  { name: "Priya Verma", roll: "21CS3012", branch: "CSE", cgpa: 9.1, tests: 15, avg: 85, readiness: 81 },
-  { name: "Rahul Singh", roll: "21EC2034", branch: "ECE", cgpa: 7.6, tests: 8, avg: 62, readiness: 55 },
-  { name: "Ananya Patel", roll: "21CS3067", branch: "CSE", cgpa: 8.8, tests: 14, avg: 82, readiness: 78 },
-  { name: "Vikram Joshi", roll: "21EE1023", branch: "EEE", cgpa: 7.2, tests: 6, avg: 58, readiness: 48 },
-  { name: "Sneha Reddy", roll: "21IT4056", branch: "IT", cgpa: 8.0, tests: 10, avg: 71, readiness: 65 },
-  { name: "Karthik Nair", roll: "21ME5078", branch: "MECH", cgpa: 7.8, tests: 7, avg: 55, readiness: 42 },
-  { name: "Divya Gupta", roll: "21CS3089", branch: "CSE", cgpa: 9.3, tests: 16, avg: 88, readiness: 85 },
-  { name: "Aditya Kumar", roll: "21EC2045", branch: "ECE", cgpa: 7.4, tests: 9, avg: 64, readiness: 58 },
-  { name: "Meera Iyer", roll: "21IT4023", branch: "IT", cgpa: 8.6, tests: 11, avg: 75, readiness: 70 },
-];
-
 type TabKey = "overview" | "students";
 
 const AdminDashboard = () => {
   const [tab, setTab] = useState<TabKey>("overview");
+  const [stats, setStats] = useState<any[]>([]);
+  const [branchData, setBranchData] = useState<any[]>([]);
+  const [perfData, setPerfData] = useState<any[]>([]);
+  const [students, setStudents] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [branchFilter, setBranchFilter] = useState("all");
-  const [selectedStudent, setSelectedStudent] = useState<typeof STUDENTS[0] | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = STUDENTS.filter((s) => {
-    const matchSearch = s.name.toLowerCase().includes(search.toLowerCase()) || s.roll.toLowerCase().includes(search.toLowerCase());
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const token = localStorage.getItem("pp_token");
+        const response = await fetch(`${getApiUrl()}/api/users/dashboard/admin`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data.stats);
+          setBranchData(data.branchData || []);
+          
+          // Generate performance data
+          setPerfData([
+            { name: "Excellent", value: 45 },
+            { name: "Good", value: 120 },
+            { name: "Average", value: 110 },
+            { name: "Below Average", value: 67 },
+          ]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch admin data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, []);
+
+  const filtered = students.filter((s) => {
+    const matchSearch = s.name.toLowerCase().includes(search.toLowerCase()) || (s.roll && s.roll.toLowerCase().includes(search.toLowerCase()));
     const matchBranch = branchFilter === "all" || s.branch === branchFilter;
     return matchSearch && matchBranch;
   });
@@ -105,15 +107,24 @@ const AdminDashboard = () => {
           <>
             {/* Stat Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              {STATS.map((s) => (
-                <Card key={s.label}>
-                  <CardContent className="p-5">
-                    <s.icon className="h-5 w-5 text-primary mb-3" />
-                    <p className="text-2xl font-bold text-foreground">{s.value}</p>
-                    <p className="text-sm text-muted-foreground">{s.label}</p>
-                  </CardContent>
-                </Card>
-              ))}
+              {stats.map((s) => {
+                const iconMap: Record<string, any> = {
+                  Users,
+                  ClipboardList,
+                  FileText,
+                  TrendingUp,
+                };
+                const IconComponent = iconMap[s.icon] || Users;
+                return (
+                  <Card key={s.label}>
+                    <CardContent className="p-5">
+                      <IconComponent className="h-5 w-5 text-primary mb-3" />
+                      <p className="text-2xl font-bold text-foreground">{s.value}</p>
+                      <p className="text-sm text-muted-foreground">{s.label}</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
 
             {/* Charts + Activity */}
@@ -123,7 +134,7 @@ const AdminDashboard = () => {
                 <CardContent className="p-5">
                   <h3 className="font-semibold text-foreground mb-4">Branch-wise Readiness Scores</h3>
                   <ResponsiveContainer width="100%" height={280}>
-                    <BarChart data={BRANCH_DATA}>
+                    <BarChart data={branchData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis dataKey="branch" tick={{ fontSize: 12 }} />
                       <YAxis tick={{ fontSize: 12 }} />
@@ -147,7 +158,7 @@ const AdminDashboard = () => {
                   <h3 className="font-semibold text-foreground mb-4">Student Performance Distribution</h3>
                   <ResponsiveContainer width="100%" height={280}>
                     <PieChart>
-                      <Pie data={PERF_DATA} cx="50%" cy="45%" outerRadius={85} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} fontSize={11}>
+                      <Pie data={perfData} cx="50%" cy="45%" outerRadius={85} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} fontSize={11}>
                         {PERF_DATA.map((_, i) => (
                           <Cell key={i} fill={PIE_COLORS[i]} />
                         ))}

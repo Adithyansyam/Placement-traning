@@ -21,7 +21,7 @@ interface Material {
 }
 
 const MATERIALS: Material[] = [
-  { title: "Quantitative Aptitude Basics", description: "Master number systems, percentages, and time & work problems.", fileType: "Video", category: "Aptitude", tags: ["Aptitude", "Quant"], url: "https://www.youtube.com/watch?v=eGKFTUuJppU", embedId: "eGKFTUuJppU" },
+  { title: "Quantitative Aptitude Basics", description: "Master number systems, percentages, and time & work problems.", fileType: "Video", category: "Aptitude", tags: ["Aptitude", "Quant"], url: "https://youtu.be/3RC4xVMdI78?si=HBWOSxh8dhZ53Kfg", embedId: "3RC4xVMdI78" },
   { title: "Logical Reasoning Patterns", description: "Common patterns in seating, blood relations, and puzzles.", fileType: "Video", category: "Aptitude", tags: ["Aptitude", "Logic"], url: "https://www.youtube.com/watch?v=tCYxc-2-3fY", embedId: "tCYxc-2-3fY" },
   { title: "Data Structures & Algorithms", description: "Arrays, trees, graphs, and sorting algorithms explained visually.", fileType: "Video", category: "Technical", tags: ["Technical", "DSA"], url: "https://www.youtube.com/watch?v=8hly31xKli0", embedId: "8hly31xKli0" },
   { title: "DBMS Complete Notes", description: "Normalization, ER diagrams, SQL queries, and transactions.", fileType: "PDF", category: "Technical", tags: ["Technical", "DBMS"], url: "https://www.tutorialspoint.com/dbms/dbms_tutorial.pdf" },

@@ -33,12 +33,7 @@ const Dashboard = () => {
             <span className="text-lg font-bold gradient-text tracking-tight">PlacePrep</span>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" className="text-muted-foreground font-medium" onClick={() => navigate("/login")}>
-              Login
-            </Button>
-            <Button className="font-semibold gradient-bg border-0 shadow-lg shadow-primary/25 hover:opacity-90" onClick={() => navigate("/login")}>
-              Get Started
-            </Button>
+            {/* Navigation buttons removed */}
           </div>
         </div>
       </nav>
@@ -71,26 +66,8 @@ const Dashboard = () => {
               <Button size="lg" className="font-semibold px-7 h-12 text-base gradient-bg border-0 shadow-lg shadow-primary/25 gap-2 hover:opacity-90" onClick={() => navigate("/login")}>
                 Get Started Free <ArrowRight className="w-4 h-4" />
               </Button>
-              <Button variant="outline" size="lg" className="font-semibold px-7 h-12 text-base glass-card border-border/50 hover:bg-muted/60">
-                See How It Works
-              </Button>
             </motion.div>
 
-            {/* Social proof */}
-            <motion.div className="mt-12 flex items-center gap-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
-              <div className="flex -space-x-2">
-                {["A", "P", "R", "S"].map((l, i) => (
-                  <div key={i} className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-primary-foreground text-xs font-bold border-2 border-background"
-                    style={{ opacity: 1 - i * 0.15 }}>
-                    {l}
-                  </div>
-                ))}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">10,000+ Students</p>
-                <p className="text-xs text-muted-foreground">already preparing with PlacePrep</p>
-              </div>
-            </motion.div>
           </div>
 
           {/* Hero mockup */}

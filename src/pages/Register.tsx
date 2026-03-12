@@ -2,7 +2,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock, User, Zap, ArrowRight, ArrowLeft, X, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { getApiUrl } from "@/lib/api";
 
 const BRANCHES = ["CSE", "ECE", "EEE", "MECH", "CIVIL", "IT"];
 const SKILL_SUGGESTIONS = ["Python", "Java", "DSA", "SQL", "React"];
@@ -24,6 +27,7 @@ const strengthColor = (s: number) =>
 
 const Register = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -39,6 +43,10 @@ const Register = () => {
   // Step 2
   const [branch, setBranch] = useState("");
   const [cgpa, setCgpa] = useState("");
+  const [rollNo, setRollNo] = useState("");
+  const [college, setCollege] = useState("");
+  const [phone, setPhone] = useState("");
+  const [dob, setDob] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
 
@@ -62,6 +70,9 @@ const Register = () => {
     if (!branch) errs.branch = "Select your branch";
     if (!cgpa) errs.cgpa = "CGPA is required";
     else if (parseFloat(cgpa) < 0 || parseFloat(cgpa) > 10) errs.cgpa = "CGPA must be between 0 and 10";
+    if (!rollNo.trim()) errs.rollNo = "Roll number is required";
+    if (!college.trim()) errs.college = "College name is required";
+    if (phone && !/^\d{10}$|^\+\d{1,3}\d{9,}$/.test(phone.replace(/\s/g, ""))) errs.phone = "Enter a valid phone number";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -77,10 +88,46 @@ const Register = () => {
     e.preventDefault();
     if (!validateStep2()) return;
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsLoading(false);
-    setSuccess(true);
-    setTimeout(() => navigate("/"), 2000);
+
+    try {
+      const response = await fetch(`${getApiUrl()}/api/users/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          branch,
+          cgpa,
+          rollNo,
+          college,
+          phone,
+          dob,
+          skills,
+          role: "student",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.error || "Registration failed");
+        setIsLoading(false);
+        return;
+      }
+
+      // Store token and login user
+      localStorage.setItem("pp_token", data.token);
+      localStorage.setItem("pp_userId", data.user.id);
+      login("student", { name: data.user.name, email: data.user.email });
+      
+      setSuccess(true);
+      toast.success("Account created successfully! ✓");
+      setTimeout(() => navigate("/dashboard"), 1500);
+    } catch (err) {
+      toast.error("Network error. Please check if the server is running.");
+      setIsLoading(false);
+    }
   };
 
   const addSkill = (skill: string) => {
@@ -324,6 +371,56 @@ const Register = () => {
                         className={`w-full px-4 py-3 rounded-xl border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${errors.cgpa ? "border-destructive" : "border-border"}`}
                       />
                       {errors.cgpa && <p className="text-xs text-destructive mt-1 font-medium">{errors.cgpa}</p>}
+                    </div>
+
+                    {/* Roll Number */}
+                    <div>
+                      <label className="block text-sm font-semibold text-foreground mb-1.5">Roll Number</label>
+                      <input
+                        type="text"
+                        value={rollNo}
+                        onChange={(e) => { setRollNo(e.target.value); clearError("rollNo"); }}
+                        placeholder="e.g. 21CS3045"
+                        className={`w-full px-4 py-3 rounded-xl border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${errors.rollNo ? "border-destructive" : "border-border"}`}
+                      />
+                      {errors.rollNo && <p className="text-xs text-destructive mt-1 font-medium">{errors.rollNo}</p>}
+                    </div>
+
+                    {/* College */}
+                    <div>
+                      <label className="block text-sm font-semibold text-foreground mb-1.5">College Name</label>
+                      <input
+                        type="text"
+                        value={college}
+                        onChange={(e) => { setCollege(e.target.value); clearError("college"); }}
+                        placeholder="e.g. VIT Vellore"
+                        className={`w-full px-4 py-3 rounded-xl border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${errors.college ? "border-destructive" : "border-border"}`}
+                      />
+                      {errors.college && <p className="text-xs text-destructive mt-1 font-medium">{errors.college}</p>}
+                    </div>
+
+                    {/* Phone */}
+                    <div>
+                      <label className="block text-sm font-semibold text-foreground mb-1.5">Phone Number (Optional)</label>
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => { setPhone(e.target.value); clearError("phone"); }}
+                        placeholder="e.g. +91 98765 43210"
+                        className={`w-full px-4 py-3 rounded-xl border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${errors.phone ? "border-destructive" : "border-border"}`}
+                      />
+                      {errors.phone && <p className="text-xs text-destructive mt-1 font-medium">{errors.phone}</p>}
+                    </div>
+
+                    {/* Date of Birth */}
+                    <div>
+                      <label className="block text-sm font-semibold text-foreground mb-1.5">Date of Birth (Optional)</label>
+                      <input
+                        type="date"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                      />
                     </div>
 
                     {/* Skills */}

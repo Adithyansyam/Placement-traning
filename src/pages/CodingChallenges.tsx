@@ -260,22 +260,67 @@ const CodingChallenges = () => {
                 </div>
               </div>
 
-              {/* Output */}
-              {output && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  className="border-t border-border"
-                >
-                  <div className="text-xs font-bold text-muted-foreground px-4 py-2 bg-muted">▶ Output</div>
+              {/* Enhanced Output Section */}
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: output ? "auto" : 0, opacity: output ? 1 : 0 }}
+                className="border-t-2 border-border bg-card/50 backdrop-blur-sm"
+              >
+                <div className="text-sm font-bold text-foreground px-4 py-3 bg-gradient-to-r from-primary/10 to-purple-500/10 border-b border-border/50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 animate-pulse" />
+                      <span>Console Output</span>
+                    </div>
+                    {output && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs px-2 py-1 h-6 hover:bg-muted/50"
+                        onClick={() => setOutput("")}
+                      >
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                <div className="max-h-48 overflow-y-auto">
                   <pre
-                    className="px-4 py-3 text-xs font-mono whitespace-pre-wrap"
-                    style={{ backgroundColor: "hsl(222 47% 11%)", color: "hsl(140 60% 55%)" }}
+                    className="px-4 py-4 text-sm font-mono whitespace-pre-wrap leading-relaxed"
+                    style={{ 
+                      backgroundColor: "hsl(222 47% 11%)", 
+                      color: "hsl(140 60% 55%)",
+                      minHeight: "120px"
+                    }}
                   >
-                    {output}
+                    {output || "// Click 'Run Code' to see output here..."}
                   </pre>
-                </motion.div>
-              )}
+                </div>
+                {output && output.includes("Passed") && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="px-4 py-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-t border-green-500/20"
+                  >
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-green-600" />
+                      <span className="font-semibold text-green-700">All test cases passed! 🎉</span>
+                    </div>
+                  </motion.div>
+                )}
+                {output && output.includes("error") && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="px-4 py-3 bg-gradient-to-r from-red-500/10 to-pink-500/10 border-t border-red-500/20"
+                  >
+                    <div className="flex items-center gap-2 text-sm">
+                      <Circle className="w-4 h-4 text-red-600" />
+                      <span className="font-semibold text-red-700">Compilation Error</span>
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
             </div>
           </div>
         </div>

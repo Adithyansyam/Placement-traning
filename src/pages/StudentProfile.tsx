@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import DashboardNav from "@/components/DashboardNav";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,22 +11,23 @@ import {
   GraduationCap, BookOpen, Award, Flame, Target, Link2,
   Github, Linkedin, Globe, Code2,
 } from "lucide-react";
+import { fetchUserProfile, updateUserProfile } from "@/lib/api";
 
-const INITIAL_PROFILE = {
-  name: "Arjun Sharma",
-  rollNo: "21CS3045",
-  branch: "Computer Science & Engineering",
-  college: "VIT Vellore",
-  cgpa: 8.4,
-  email: "arjun.sharma@vit.ac.in",
-  phone: "+91 98765 43210",
-  dob: "2002-05-15",
+const DEFAULT_PROFILE = {
+  name: "",
+  rollNo: "",
+  branch: "",
+  college: "",
+  cgpa: 0,
+  email: "",
+  phone: "",
+  dob: "",
   degree: "B.Tech",
   gradYear: "2025",
   backlogs: "0",
-  linkedin: "https://linkedin.com/in/arjunsharma",
-  github: "https://github.com/arjunsharma",
-  leetcode: "https://leetcode.com/arjunsharma",
+  linkedin: "",
+  github: "",
+  leetcode: "",
   portfolio: "",
 };
 
@@ -54,21 +55,79 @@ const LEVEL_COLORS: Record<string, string> = {
 };
 
 const StudentProfile = () => {
-  const [profile, setProfile] = useState(INITIAL_PROFILE);
-  const [skills, setSkills] = useState(INITIAL_SKILLS);
+  const userId = localStorage.getItem("pp_userId");
+  const [isLoading, setIsLoading] = useState(true);
+  const [profile, setProfile] = useState(DEFAULT_PROFILE);
+  const [skills, setSkills] = useState<{ name: string; level: "Beginner" | "Intermediate" | "Expert" }[]>([]);
   const [newSkill, setNewSkill] = useState("");
   const [editingSection, setEditingSection] = useState<string | null>(null);
-  const [editDraft, setEditDraft] = useState(INITIAL_PROFILE);
+  const [editDraft, setEditDraft] = useState(DEFAULT_PROFILE);
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!userId) {
+        toast.error("User ID not found. Please log in again.");
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const userData = await fetchUserProfile(userId);
+        
+        // Map backend data to profile structure
+        const profileData = {
+          name: userData.name || "",
+          rollNo: userData.rollNo || "",
+          branch: userData.branch || "",
+          college: userData.college || "",
+          cgpa: userData.cgpa || 0,
+          email: userData.email || "",
+          phone: userData.phone || "",
+          dob: userData.dob || "",
+          degree: userData.degree || "B.Tech",
+          gradYear: userData.gradYear || "2025",
+          backlogs: userData.backlogs || "0",
+          linkedin: userData.linkedin || "",
+          github: userData.github || "",
+          leetcode: userData.leetcode || "",
+          portfolio: userData.portfolio || "",
+        };
+        
+        setProfile(profileData);
+        setEditDraft(profileData);
+        setSkills(userData.skills || []);
+      } catch (err) {
+        toast.error("Failed to load profile");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, [userId]);
 
   const startEdit = (section: string) => {
     setEditDraft({ ...profile });
     setEditingSection(section);
   };
   const cancelEdit = () => setEditingSection(null);
-  const saveEdit = () => {
-    setProfile({ ...editDraft });
-    setEditingSection(null);
-    toast.success("Profile updated ✓");
+  const saveEdit = async () => {
+    if (!userId) return;
+    
+    try {
+      // Update backend
+      await updateUserProfile(userId, editDraft);
+      
+      // Update local state
+      setProfile({ ...editDraft });
+      setEditingSection(null);
+      toast.success("Profile updated ✓");
+    } catch (err) {
+      toast.error("Failed to save profile");
+      console.error(err);
+    }
   };
 
   const addSkill = () => {
@@ -108,6 +167,14 @@ const StudentProfile = () => {
     <div className="min-h-screen bg-background mesh-bg">
       <DashboardNav />
       <div className="max-w-5xl mx-auto px-4 py-8">
+        {isLoading ? (
+          <Card className="mb-6">
+            <CardContent className="p-6">
+              <div className="text-center text-muted-foreground">Loading profile...</div>
+            </CardContent>
+          </Card>
+        ) : (
+        <>
         {/* Profile Header */}
         <Card className="mb-6">
           <CardContent className="p-6">
@@ -289,6 +356,8 @@ const StudentProfile = () => {
             </Card>
           </TabsContent>
         </Tabs>
+        </>
+        )}
       </div>
     </div>
   );
