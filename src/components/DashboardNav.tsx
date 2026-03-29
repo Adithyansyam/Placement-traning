@@ -7,7 +7,6 @@ const NAV_LINKS = [
   { label: "Home", to: "/home" },
   { label: "Study Materials", to: "/study-materials" },
   { label: "Mock Tests", to: "/mock-tests" },
-  { label: "Coding", to: "/coding" },
   { label: "Company Prep", to: "/company-prep" },
   { label: "Progress", to: "/progress" },
   { label: "Skill Gap", to: "/skill-gap" },

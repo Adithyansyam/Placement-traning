@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   ClipboardCheck, Target, Flame, Gauge, ArrowRight, Calendar,
-  BookOpen, Code2, TrendingUp, Sparkles
+  BookOpen, TrendingUp, Sparkles
 } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -20,14 +20,12 @@ const iconMap: Record<string, any> = {
   Flame,
   Gauge,
   BookOpen,
-  Code2,
   TrendingUp,
   Sparkles,
 };
 
 const quickActions = [
   { icon: BookOpen, label: "Study Materials", path: "/study-materials", gradient: "from-primary to-indigo-400" },
-  { icon: Code2, label: "Coding Practice", path: "/coding", gradient: "from-purple-500 to-pink-500" },
   { icon: TrendingUp, label: "View Progress", path: "/progress", gradient: "from-emerald-500 to-teal-500" },
   { icon: Sparkles, label: "Skill Gap Analysis", path: "/skill-gap", gradient: "from-amber-500 to-orange-500" },
 ];

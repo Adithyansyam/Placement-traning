@@ -12,7 +12,6 @@ import Home from "./pages/Home";
 import StudentDashboard from "./pages/StudentDashboard";
 import StudyMaterials from "./pages/StudyMaterials";
 import CompanyPrep from "./pages/CompanyPrep";
-import CodingChallenges from "./pages/CodingChallenges";
 import MockTests from "./pages/MockTests";
 import Progress from "./pages/Progress";
 import SkillGap from "./pages/SkillGap";
@@ -45,7 +44,6 @@ const App = () => (
             <Route path="/materials" element={<P roles={["student"]}><StudyMaterials /></P>} />
             <Route path="/study-materials" element={<P roles={["student"]}><StudyMaterials /></P>} />
             <Route path="/company-prep" element={<P roles={["student"]}><CompanyPrep /></P>} />
-            <Route path="/coding" element={<P roles={["student"]}><CodingChallenges /></P>} />
             <Route path="/mock-tests" element={<P roles={["student"]}><MockTests /></P>} />
             <Route path="/progress" element={<P roles={["student"]}><Progress /></P>} />
             <Route path="/skill-gap" element={<P roles={["student"]}><SkillGap /></P>} />
