@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Download, CheckCircle2, ArrowRight } from "lucide-react";
 import DashboardNav from "@/components/DashboardNav";
 import { Button } from "@/components/ui/button";
+import { jsPDF } from "jspdf";
 
 interface Company {
   name: string;
@@ -250,32 +251,74 @@ const CompanyPrep = () => {
       "SQL/DBMS question",
     ];
 
-    const content = [
-      `${selectedCompany.name} - ${paper.title}`,
-      `Year: ${paper.year}`,
-      "",
-      "Sample Question Paper",
-      "=====================",
-      "",
-      ...questions.map((q, i) => `${i + 1}. ${q}`),
-      "",
-      "Preparation Reminder:",
-      ...selectedCompany.tips.slice(0, 3).map((tip, i) => `${i + 1}. ${tip}`),
-    ].join("\n");
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const left = 50;
+    const right = pageWidth - 50;
+    const maxWidth = right - left;
+    let y = 60;
 
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
+    const ensureSpace = (needed = 24) => {
+      if (y + needed > pageHeight - 50) {
+        doc.addPage();
+        y = 60;
+      }
+    };
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(`${selectedCompany.name} Question Paper`, left, y);
+    y += 24;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.text(`Title: ${paper.title}`, left, y);
+    y += 16;
+    doc.text(`Year: ${paper.year}`, left, y);
+    y += 16;
+    doc.text(`Package Range: ${selectedCompany.package}`, left, y);
+    y += 22;
+
+    doc.setDrawColor(210);
+    doc.line(left, y, right, y);
+    y += 20;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.text("Questions", left, y);
+    y += 18;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    questions.forEach((q, i) => {
+      const wrapped = doc.splitTextToSize(`${i + 1}. ${q}`, maxWidth);
+      ensureSpace(wrapped.length * 14 + 8);
+      doc.text(wrapped, left, y);
+      y += wrapped.length * 14 + 8;
+    });
+
+    ensureSpace(28);
+    y += 4;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.text("Preparation Reminder", left, y);
+    y += 18;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    selectedCompany.tips.slice(0, 3).forEach((tip, i) => {
+      const wrapped = doc.splitTextToSize(`${i + 1}. ${tip}`, maxWidth);
+      ensureSpace(wrapped.length * 14 + 8);
+      doc.text(wrapped, left, y);
+      y += wrapped.length * 14 + 8;
+    });
+
     const safeTitle = `${selectedCompany.name}_${paper.title}_${paper.year}`
       .replace(/\s+/g, "_")
       .replace(/[^a-zA-Z0-9_]/g, "");
 
-    link.href = url;
-    link.download = `${safeTitle}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    doc.save(`${safeTitle}.pdf`);
   };
 
   return (
