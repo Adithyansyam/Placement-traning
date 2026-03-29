@@ -176,11 +176,107 @@ const COMPANIES: Company[] = [
 
 const DETAIL_TABS = ["About the Drive", "Previous Papers", "Preparation Tips"] as const;
 
+const QUESTION_BANK: Record<string, string[]> = {
+  TCS: [
+    "Solve: Find the second largest number in an array without sorting.",
+    "Aptitude: A train 120m long crosses a pole in 6 seconds. Find speed in km/h.",
+    "DBMS: Explain normalization and list the normal forms.",
+    "OS: What is the difference between process and thread?",
+    "Coding: Reverse words in a sentence without using extra arrays.",
+  ],
+  Infosys: [
+    "Pseudo-code: Trace loop output for nested condition statements.",
+    "Aptitude: Profit-loss word problem with successive discounts.",
+    "OOP: Explain abstraction with a practical class example.",
+    "Coding: Check if two strings are anagrams.",
+    "HR: Tell me about a time you resolved a team conflict.",
+  ],
+  Wipro: [
+    "Essay: Write 150-200 words on impact of AI in education.",
+    "Reasoning: Identify next figure in visual series.",
+    "Coding: Count vowels and consonants in a string.",
+    "C: Difference between malloc and calloc.",
+    "HR: Why do you want to join Wipro?",
+  ],
+  Accenture: [
+    "Cognitive: Pattern completion and odd-one-out set.",
+    "Coding: Find first non-repeating character in a string.",
+    "Communication: Speak on teamwork for 60 seconds.",
+    "Reasoning: Syllogism-based conclusion question.",
+    "HR: Describe a project where you took ownership.",
+  ],
+  Cognizant: [
+    "Aptitude: Data interpretation based on bar chart.",
+    "Automata coding: Find duplicate elements in array.",
+    "SDLC: Explain Agile sprint lifecycle.",
+    "SQL: Write a query to fetch second highest salary.",
+    "HR: How do you handle deadlines?",
+  ],
+  HCL: [
+    "Quant: Time and work collaborative efficiency problem.",
+    "C++: Difference between overloading and overriding.",
+    "Networking: Explain TCP three-way handshake.",
+    "OS: What is deadlock and prevention methods?",
+    "HR: Explain a challenge you faced in academics.",
+  ],
+  Amazon: [
+    "Coding: Two Sum variant with index constraints.",
+    "Coding: Merge overlapping intervals.",
+    "DSA: Explain time complexity of hash map operations.",
+    "Behavioral: Tell me about a time you disagreed and committed.",
+    "System Design: Design a URL shortener (high-level).",
+  ],
+  Google: [
+    "Coding: Longest substring without repeating characters.",
+    "Coding: Kth largest element in a stream.",
+    "System Design: Design a rate limiter.",
+    "Behavioral: Describe a problem you solved with minimal guidance.",
+    "Complexity: Optimize brute force solution and justify trade-offs.",
+  ],
+};
+
 const CompanyPrep = () => {
   const [selected, setSelected] = useState<string | null>(null);
   const [detailTab, setDetailTab] = useState<typeof DETAIL_TABS[number]>("About the Drive");
 
   const company = COMPANIES.find((c) => c.name === selected);
+
+  const downloadPaper = (selectedCompany: Company, paper: { title: string; year: string }) => {
+    const questions = QUESTION_BANK[selectedCompany.name] ?? [
+      "Aptitude question",
+      "Coding problem",
+      "Technical concept question",
+      "Behavioral interview question",
+      "SQL/DBMS question",
+    ];
+
+    const content = [
+      `${selectedCompany.name} - ${paper.title}`,
+      `Year: ${paper.year}`,
+      "",
+      "Sample Question Paper",
+      "=====================",
+      "",
+      ...questions.map((q, i) => `${i + 1}. ${q}`),
+      "",
+      "Preparation Reminder:",
+      ...selectedCompany.tips.slice(0, 3).map((tip, i) => `${i + 1}. ${tip}`),
+    ].join("\n");
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const safeTitle = `${selectedCompany.name}_${paper.title}_${paper.year}`
+      .replace(/\s+/g, "_")
+      .replace(/[^a-zA-Z0-9_]/g, "");
+
+    link.href = url;
+    link.download = `${safeTitle}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="min-h-screen bg-background mesh-bg">
@@ -329,7 +425,12 @@ const CompanyPrep = () => {
                                 <div className="text-xs text-muted-foreground">{paper.year} • PDF</div>
                               </div>
                             </div>
-                            <Button size="sm" variant="outline" className="shrink-0 text-xs h-8 px-3 rounded-lg gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="shrink-0 text-xs h-8 px-3 rounded-lg gap-1"
+                              onClick={() => downloadPaper(company, paper)}
+                            >
                               <Download className="w-3 h-3" /> Download
                             </Button>
                           </div>

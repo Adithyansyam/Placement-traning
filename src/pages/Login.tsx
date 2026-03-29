@@ -13,8 +13,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate = useNavigate();
@@ -156,14 +154,6 @@ const Login = () => {
                   </button>
                 </div>
                 {errors.password && <p className="text-xs text-destructive mt-1 font-medium">{errors.password}</p>}
-              </div>
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30 accent-primary" />
-                  <span className="text-xs text-muted-foreground font-medium">Remember me</span>
-                </label>
-                <button type="button" className="text-xs text-primary hover:underline font-semibold">Forgot Password?</button>
               </div>
 
               <Button

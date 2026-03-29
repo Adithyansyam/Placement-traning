@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
+import { getApiUrl } from "@/lib/api";
 import {
   Sparkles,
   Bot,
@@ -16,20 +17,6 @@ import {
   ArrowRight,
   Star,
 } from "lucide-react";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const GEMINI_API_KEY = "AIzaSyCTnJnlpyeRL5v1sILldEhrjcs3UjSUArE";
-
-const SYSTEM_PROMPT = `You are PlacePrep AI, an expert placement and interview preparation assistant. 
-Help students with:
-- Technical interview preparation (DSA, System Design, LLD)
-- HR and behavioral interview questions
-- Resume tips and feedback
-- Company-specific advice (Amazon, Google, TCS, Infosys, etc.)
-- Coding challenges
-- Study planning and roadmaps
-
-Be concise, friendly, motivating, and practical. Format responses clearly using bullet points or numbered lists where helpful. Keep answers focused and actionable.`;
 
 const AI_FEATURES = [
   {
@@ -79,31 +66,11 @@ const QUICK_PROMPTS = [
 
 type Message = { role: "user" | "ai"; text: string };
 
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-
-const getModel = () =>
-  genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
-    systemInstruction: SYSTEM_PROMPT,
-  });
-
 const AIPage = () => {
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  // Maintain Gemini chat session
-  const chatSessionRef = useRef<any>(null);
-  const historyRef = useRef<{ role: string; parts: { text: string }[] }[]>([]);
-
-  // Initialize chat session
-  const initSession = () => {
-    chatSessionRef.current = getModel().startChat({ history: historyRef.current });
-  };
-
-  useEffect(() => {
-    initSession();
-  }, []);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -113,35 +80,38 @@ const AIPage = () => {
   const sendMessage = async (text?: string) => {
     const msg = (text ?? message).trim();
     if (!msg || loading) return;
+    const historyForRequest = [...chat];
     setMessage("");
     setChat((prev) => [...prev, { role: "user", text: msg }]);
     setLoading(true);
 
-    // Ensure session is alive
-    if (!chatSessionRef.current) initSession();
-
     try {
-      const result = await chatSessionRef.current.sendMessage(msg);
-      const reply = result.response.text();
-      // Track history for session continuity
-      historyRef.current = [
-        ...historyRef.current,
-        { role: "user", parts: [{ text: msg }] },
-        { role: "model", parts: [{ text: reply }] },
-      ];
+      const response = await fetch(`${getApiUrl()}/api/ai/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg, history: historyForRequest }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        const details = data?.details ? ` ${String(data.details)}` : "";
+        throw new Error(`${data?.error || "Request failed"}${details}`);
+      }
+
+      const reply = String(data?.reply || "").trim();
+      if (!reply) throw new Error("Empty response from AI service");
+
       setChat((prev) => [...prev, { role: "ai", text: reply }]);
     } catch (err: any) {
-      console.error("Gemini API error:", err);
+      console.error("Groq API error:", err);
       const errStr = String(err?.message ?? err ?? "");
       const is429 = err?.status === 429 || errStr.includes("429");
-      const is403 = err?.status === 403 || errStr.includes("403") || errStr.includes("API_KEY");
+      const is403 = err?.status === 403 || errStr.includes("403") || errStr.includes("GROQ_API_KEY");
       const errMsg = is429
         ? "⚠️ Rate limit reached — please wait 10–15 seconds and try again."
         : is403
-        ? "❌ API key error — the Gemini key may be invalid or not enabled. Check the console for details."
+        ? "❌ API key error — the Groq key may be invalid or missing on the server."
         : `❌ Error: ${errStr || "Unknown error. Open browser console (F12) for details."}`;
-      // Reinitialize session in case it got corrupted
-      initSession();
       setChat((prev) => [...prev, { role: "ai", text: errMsg }]);
     } finally {
       setLoading(false);
@@ -162,14 +132,14 @@ const AIPage = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-5">
             <Sparkles className="w-4 h-4" />
-            Powered by Gemini AI
+            Powered by Groq AI
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4 leading-tight">
             Your Personal{" "}
             <span className="gradient-text">AI Placement</span> Assistant
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Supercharge your interview prep with Gemini-powered coaching, resume
+            Supercharge your interview prep with Groq-powered coaching, resume
             analysis, and smart study planning — all in one place.
           </p>
         </motion.div>
@@ -227,8 +197,8 @@ const AIPage = () => {
               <Bot className="w-4 h-4 text-primary-foreground" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">Gemini AI Chat</h2>
-              <p className="text-xs text-muted-foreground">Powered by Google Gemini · Ask anything about placements</p>
+              <h2 className="text-lg font-bold text-foreground">Groq AI Chat</h2>
+              <p className="text-xs text-muted-foreground">Powered by Groq · Ask anything about placements</p>
             </div>
             <Badge className="ml-auto bg-emerald-500/15 text-emerald-600 border-emerald-500/30">● Live</Badge>
           </div>

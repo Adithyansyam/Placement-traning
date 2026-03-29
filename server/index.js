@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import path from "path";
 import { connectDB } from "./db.js";
 import usersRouter from "./routes/users.js";
+import aiRouter from "./routes/ai.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -36,6 +37,7 @@ app.use(express.json());
 
 // ── Routes ────────────────────────────────────────────────────
 app.use("/api/users", usersRouter);
+app.use("/api/ai", aiRouter);
 
 // Health-check
 app.get("/api/health", (_req, res) => {
